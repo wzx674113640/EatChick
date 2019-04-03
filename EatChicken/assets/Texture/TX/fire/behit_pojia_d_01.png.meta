@@ -1,0 +1,31 @@
+{
+  "ver": "2.2.0",
+  "uuid": "9d5f5273-76af-4a5f-897e-5fdc0ba8195d",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "subMetas": {
+    "behit_pojia_d_01": {
+      "ver": "1.0.3",
+      "uuid": "f4c5847a-22ec-4453-b70a-03a596301c4f",
+      "rawTextureUuid": "9d5f5273-76af-4a5f-897e-5fdc0ba8195d",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -163,
+      "offsetY": -1.5,
+      "trimX": 80,
+      "trimY": 109,
+      "width": 350,
+      "height": 199,
+      "rawWidth": 836,
+      "rawHeight": 414,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
