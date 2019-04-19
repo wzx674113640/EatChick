@@ -40,9 +40,26 @@ cc.Class({
         BoomDragon:cc.Node,
         Config:cc.Component,
         HurtLabel:cc.Label,
-        HurtLabelParent:cc.Node
+        HurtLabelParent:cc.Node,
+        BossUI:cc.Node,
+        CoinAni: cc.Component,
     },
     
+    onLoad()
+    {
+        window.GameControl = this;
+        this.currentEnemy = null;
+        this.levelEnemyCount = 5;
+        this.HurtLabelList = [];
+        this.HurtLabelList.push(this.HurtLabel);
+
+        this.PlaySkins = this.Config.PlaySkins;
+        this.EnemySkins = this.Config.EnemySkins;
+        this.EnemyNames = this.Config.EnemyNames;
+        this.BossSkins = this.Config.BossSkins;
+        this.BossNames = this.Config.BossNames;
+    },
+
     playBoom(pos)
     {
         this.BoomDragon.parent.setPosition(pos);
@@ -51,12 +68,22 @@ cc.Class({
         this._armature = this._armatureDisPlay.playAnimation("Sprite",1);
     },
 
-    randomSkin()
+    randomSkin(IsBoss)
     {
-        var index = Math.floor(Math.random()*this.EnemySkins.length);
-        var data  = {};
-        data.skin = this.EnemySkins[index];
-        data.name = this.EnemyNames[index];
+        if(IsBoss)
+        {
+            var index = Math.floor(Math.random() * this.BossSkins.length);
+            var data  = {};
+            data.skin = this.BossSkins[index];
+            data.name = this.BossNames[index];
+        }
+        else
+        {
+            var index = Math.floor(Math.random() * this.EnemySkins.length);
+            var data  = {};
+            data.skin = this.EnemySkins[index];
+            data.name = this.EnemyNames[index];
+        }
         return data;
     },
 
@@ -76,14 +103,7 @@ cc.Class({
         this.player.PlayInfo.RiflemanCount ++;
     },
 
-    onLoad()
-    {
-        window.GameControl = this;
-        this.currentEnemy = null;
-        this.levelEnemyCount = 5;
-        this.HurtLabelList = [];
-        this.HurtLabelList.push(this.HurtLabel);
-    },
+   
 
     start () {
         
@@ -93,9 +113,11 @@ cc.Class({
         
         this.UserInfo = GameGlobal.SeverManager.UserInfo;
 
-        //this.GameStart();
+        this.GameStart();
 
         GameGlobal.MsgCenter.on(Constant.Msg.AginGame,this.AginGame.bind(this));
+
+        
     },
     
     HurtLabelAni(Power,HurtLabelPos)
@@ -114,6 +136,15 @@ cc.Class({
         Hurt.node.runAction(cc.sequence(cc.spawn(m,f),call));
     },
 
+    PlayBossUI()
+    {
+        this.BossUI.x = -650;
+        var m =  cc.moveBy(0.3,650,0);
+        var b = cc.blink(1,3);
+        var m1 =  cc.moveBy(0.3,650,0);
+        this.BossUI.runAction(cc.sequence(m,b,m1));
+    },  
+
     setNextEnemy()
     {
         
@@ -125,6 +156,7 @@ cc.Class({
         if(this.KillNumber == this.levelEnemyCount)
         {
             this.Boss.setPos(pos,this.player.node.scaleX);
+            this.PlayBossUI();
         }
         else
         {
@@ -178,6 +210,7 @@ cc.Class({
     {
         this.player.NewPlayInfo();
         this.player.PlayInfo.Init();
+      
         //玩家
         var skinID = this.UserInfo.CurrentSkin-1;
         var gunID = this.UserInfo.CurrentGun-1;
@@ -191,7 +224,7 @@ cc.Class({
         this.startPlayerPos = lastPos;
         //场景
         var dir = -1;
-        
+       
         for(var i = 0;i<5;i++)
         {
             dir  = -dir;
@@ -246,7 +279,7 @@ cc.Class({
         this.KillNumber = 0;
         this.player.Init(active);
         this.Boss.Init();
-    
+        UIGameing.changeScene();
         var dir = -1;
         var lastPos = this.startPlayerPos;
         for(var i = 0;i<this.wallList.length;i++)
@@ -275,10 +308,16 @@ cc.Class({
             {
                 GameGlobal.SeverManager.C2G_ChangeCoin(()=>
                 {
-                    GameGlobal.HelperManager.ReductionDimondCount(Count);
-                    GameGlobal.MsgCenter.emit(Constant.Msg.ChangCoin,60);
+                    //GameGlobal.HelperManager.ReductionDimondCount(Count);
+                    
+                    this.CoinAni.play(cc.v2(0,0),()=>
+                    {
+                        GameGlobal.MsgCenter.emit(Constant.Msg.ChangCoin,6);
+                    });
+
                 },1,60);
-            },"获得金币x60");
+                
+            });
         }
         else
         {

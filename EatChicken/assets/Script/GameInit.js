@@ -4,17 +4,139 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-
+        ProgressBar:cc.ProgressBar,
+        BulletUI:cc.Node,
+        NumBar:cc.Label,
+        BG:cc.Node
     },
 
-    start () {
+    onLoad () {
+        this.version = 114;
+        this.speed = 0.4;
         this.UIMainNode = cc.find("Canvas/UIMain");
+        this.Domain = "https://cj.qkxz.com/?";
         if(!CC_WECHATGAME)
             return;
+        var obj = wx.getLaunchOptionsSync();
+        var Sence = obj.query.scene == undefined ? null : obj.query.scene;
+        this._Sence = decodeURIComponent(Sence); //渠道过来的场景值
+        this._AppID = obj.referrerInfo&&obj.referrerInfo.appId?obj.referrerInfo:"";
+        this.gameID = 0;//当局游戏ID
+        this.SEVER_COUNT = 0 ; //重复请求网络的次数
+        /*
         wx.showLoading({
             title: '加载中',
-        })
+        });
+        */
+        this.isupdate = true;
         this.LoadChildPack(); 
+        this.Login();
+    },
+
+    
+
+    Login()
+    {
+        var self = this;
+        wx.login({
+            success (res) {
+                if (res.code) {
+                    wx.request({
+                        url: self.Domain + 'act=userinfo',
+                        data: {
+                            code: res.code,
+                            nickName:"",
+                            avatarUrl: "",
+                            gender:"",
+                            scene:self._Sence,
+                            version: self.version,
+                            uid:0,
+                            appid:self._AppID
+                        },
+                        success (res) {
+                            var Data =  res.data.data;
+                            self.GetUser(Data);
+                            self.C2G_AppID();
+                        },
+                        fail()
+                        {
+                            if(self.SEVER_COUNT >= 2)
+                            {
+                                self.login();
+                                self.SEVER_COUNT ++;
+                            }
+                            else
+                            {
+                                wx.showToast({
+                                    title: "请检查网络!",
+                                    icon: 'success',
+                                    duration: 1500
+                                });
+                            }
+                           
+                          
+                        }
+                    });
+                } 
+            }
+        })
+       
+    },
+
+    GetUser(Data)
+    {
+        var self = this;
+        self.Data = Data;
+        wx.request({
+            url: self.Domain + "act=user",
+            data:
+            {
+                openid:self.Data.openid,
+                version:self.version,
+                scene:self._Sence,
+                uid:0,
+            },
+            success (res) 
+            {
+                self.UserData = res.data.data;
+                self.LoaderUIstart();
+            },
+            fail()
+            {
+                if(self.SEVER_COUNT >= 2)
+                {
+                    self.GetUser(Data);
+                    self.SEVER_COUNT ++;
+                }
+                else
+                {
+                    wx.showToast({
+                        title: "请检查网络!",
+                        icon: 'success',
+                        duration: 1500
+                    })
+                }
+               
+            }
+        });
+    },
+
+    C2G_AppID()
+    {
+        var self =this; 
+        wx.request({ 
+            url:  self.Domain + "act=gamelist",
+            data:
+            {
+                openid:self.Data.openid,
+                version:self.version,
+            },
+            success (res) 
+            {
+                var data = res.data.data;
+                self.gamelist = data.gamelist;
+            }
+        })
     },
 
     //加载子包
@@ -31,13 +153,67 @@ cc.Class({
         })
     },
 
+    Finish()
+    {
+        this.BG.active = false;
+    },
+
+    LoaderUIstart(prefab = null)
+    {
+        if(prefab != null)
+        {
+            this.UIStartPre = prefab;
+            this.isloder  = true;
+        }
+        else
+        {
+            this.isSever = true;
+            if(this.UIStartPre == undefined)
+                return;
+        }
+        if(this.isSever == true && this.isloder == true)
+        {   
+            cc.find("Canvas").addComponent(require("GameGlobal"))
+            var UINode = cc.instantiate(this.UIStartPre);
+            this.UIStart = UINode;
+            UINode.parent = this.UIMainNode;
+            this.Finish();
+        }
+    },
+
     LoadFirstPrefabs()
     {
-        cc.loader.loadRes('Prefabs/UI/UIGameing', cc.Prefab, (err, prefab) => {
-            cc.find("Canvas").addComponent(require("GameGlobal"));
-            var UINode = cc.instantiate(prefab);
-            UINode.parent = this.UIMainNode;
-            this.UIStart = UINode;
+        cc.loader.loadRes('Prefabs/UIGameing', cc.Prefab, this._progressCallback.bind(this),(err, prefab) => {
+            //this.Finish();
+            //GameGlobal.MsgCenter.on("Finish",this.Finish.bind(this));
+            this.LoaderUIstart(prefab);
         });
-    }
+
+        cc.loader.loadResDir("Sound",cc.assets,function(completeCount, totalCount, res)
+        {
+            
+        });
+
+        cc.loader.loadResDir("Prefabs/UI",cc.assets,function(completeCount, totalCount, res)
+        {
+
+        });
+    },
+
+    _progressCallback(completeCount, totalCount, res)
+    {
+        var value = completeCount / totalCount ;
+        this.ProgressBar.progress = completeCount / totalCount;
+        var BulletUIValue = value * this.ProgressBar.node.width;
+        if(BulletUIValue <= 454)
+        {
+            this.BulletUI.x = BulletUIValue;
+        }
+        else
+        {
+            this.BulletUI.x = 454;
+        }
+        this.NumBar.string = Math.ceil(value*100)+"%";
+    },
+ 
 });

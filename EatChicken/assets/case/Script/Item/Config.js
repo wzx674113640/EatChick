@@ -4,12 +4,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        Skins:
-        {
-            type:cc.SpriteFrame,
-            default:[]
-        },
-
+       
         Guns:
         {
             type:cc.SpriteFrame,
@@ -19,6 +14,68 @@ cc.Class({
         GunItems:
         {
             type:cc.Node,
+            default:[]
+        },
+
+        PlaySkins:
+        {
+            type:cc.SpriteFrame,
+            default:[]
+        },
+
+        PlayNames:
+        {
+            type:cc.String,
+            default:[]
+        },
+
+        EnemySkins:
+        {
+            type:cc.SpriteFrame,
+            default:[]
+        }, 
+
+        EnemyNames:
+        {
+            type:cc.String,
+            default:[]
+        },
+
+        BossSkins:
+        {
+            type:cc.SpriteFrame,
+            default:[]
+        }, 
+
+        BossNames:
+        {
+            type:cc.String,
+            default:[]
+        },
+
+        //场景配置
+
+        BgSpris: 
+        {
+            type:cc.SpriteFrame,
+            default:[]
+        },
+
+        WallSpris: 
+        {
+            type:cc.SpriteFrame,
+            default:[]
+        },
+        
+        BangSpris:
+        {
+            type:cc.SpriteFrame,
+            default:[]
+        },
+
+        LightSpris:
+        {
+            type:cc.SpriteFrame,
             default:[]
         }
     },

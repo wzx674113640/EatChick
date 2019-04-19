@@ -1,18 +1,14 @@
 
 var SharePIC = [
-    "https://img.qkxz.com/cj/share/1.jpg",
-    "https://img.qkxz.com/cj/share/2.jpg",
-    "https://img.qkxz.com/cj/share/3.jpg",
-    "https://img.qkxz.com/cj/share/4.jpg",
-    "https://img.qkxz.com/cj/share/5.jpg",
+    "https://img.qkxz.com/cj/share/6.jpg",
+    "https://img.qkxz.com/cj/share/7.jpg",
+    "https://img.qkxz.com/cj/share/8.jpg"
 ]
 
 var ShareStr = [
-    "15倍手枪爆头，一枪一个准。",
-    "在我鸡霸面前，没有吃不到的鸡。",
-    "老表快上车，带你装逼带你飞！。",
-    "说好的一起吃鸡，结果你却单飞了！",
-    "吃鸡是不可能吃鸡了，吃个鸡屁股吧！",
+    "吃鸡游戏全新登场，不一样的开局，不一样的吃鸡",
+    "吉利服摸到了给你，八倍镜也给你，98K和AWM都给你",
+    "大吉大利，今晚吃鸡",
 ];
 
 var AdsManager =  cc.Class({
@@ -26,17 +22,16 @@ var AdsManager =  cc.Class({
         this.bottomPos = 0;//"不了谢谢"适配像素高度
         this.bannerAdHeight = 117; // 广告高度
         this.ipx = GameGlobal.SeverManager.UserInfo.ipx;
-        this.screenHeight = GameGlobal.SeverManager.UserInfo.screenHeigth;
+        this.screenHeight = GameGlobal.SeverManager.UserInfo.screenHeight;
         this.screenWidth =  GameGlobal.SeverManager.UserInfo.screenWidth;
         let sysInfo = GameGlobal.SeverManager.UserInfo.sysInfo;
 
-
         if(!CC_WECHATGAME)
             return;
-        this.IsIPhoneX =  sysInfo.model.indexOf('iPhone X') == -1?true:false;
+        this.IsIPhoneX =  sysInfo.model.indexOf('iPhone X') == -1? false:true;
         this.ShareEvent = null; //分享事件
         this.action = null; //看视频事件
-        
+        this.SharePop = null //分享弹窗提示
       
         this.InitShareEvent();
         this.InitVideoEvent();
@@ -53,7 +48,7 @@ var AdsManager =  cc.Class({
         this.videoAd.onError(err => {
             //看视频失败回调
             //....
-            GameGlobal.HintManager.HideLoading();
+            //GameGlobal.HintManager.HideLoading();
             if(self.action!= null)
             {
                 self.action();
@@ -69,21 +64,30 @@ var AdsManager =  cc.Class({
         var value = Math.floor(Math.random()*ShareStr.length);
         this.ShareImg = SharePIC[value];
         this.ShareString = ShareStr[value];
+        var actionImg= ()=>
+        {
+            var value = Math.floor(Math.random()*SharePIC.length);
+            this.ShareImg = SharePIC[value];
+            return this.ShareImg;
+        }
+
+        var actionTitle = ()=>
+        {
+            var value = Math.floor(Math.random()*SharePIC.length);
+            this.ShareString = ShareStr[value];
+            return this.ShareString;
+        }
         var self = this;
         //注册右上角转发事件
         wx.onShareAppMessage(()=>{
             return {
-                title: self.ShareString,
-                imageUrl: self.ShareImg,
+                title: actionTitle(),
+                imageUrl: actionImg(),
                 success(res){
-                    var value = Math.floor(Math.random()*SharePIC.length);
-                    this.ShareImg = SharePIC[value];
-                    this.ShareString = ShareStr[value];
+                    
                 },
                 fail(res){
-                    var value = Math.floor(Math.random()*SharePIC.length);
-                    this.ShareImg = SharePIC[value];
-                    this.ShareString = ShareStr[value];
+                   
                 }
             } 
         });
@@ -91,6 +95,7 @@ var AdsManager =  cc.Class({
         wx.showShareMenu({
             withShareTicket: true
         });
+        
     },
 
 
@@ -111,21 +116,27 @@ var AdsManager =  cc.Class({
             {
                 if(this.ShareEvent!= null)
                 {
+                    GameGlobal.HintManager.TitlePop("分享成功");
+                    /*
                     wx.showToast({
                         title: "分享成功",
                         icon: 'success',
                         duration: 800
                       })
+                    */
                     this.ShareEvent();
                     this.ShareEvent = null;
                 }
             }
             else if(value<3000)
             {
-                if(this.ShareEvent!= null)
+                if(this.SharePop!= null)
                 {
-                    this.ShareEvent = null;
+                    this.SharePop();
                 }
+              
+                //GameGlobal.HintManager.TitlePop("分享失败，请分享到不同的群");
+               
             }
         })
     },
@@ -142,29 +153,33 @@ var AdsManager =  cc.Class({
                 adUnitId: self.bannerAdID,
                 style: {
                     left: 0,
-                    top: self.screenHeight-130,
-                    width: self.screenWidth,
-                    height: 200,
+                    top:0,
+                    width:320
                 }
                 });
             bannerAd.onLoad(() => {
+                
+                GameGlobal.UIManager.Close(Constant.UIPop.UIDownApp);
+
                 if(this.IsIPhoneX)
                 {
-                    bannerAd.style.top = self.screenHeight-bannerAd.style.realHeight;
+                    bannerAd.style.top = self.screenHeight-bannerAd.style.realHeight - 34;
                 }
                 else
                 {
-                    bannerAd.style.top = self.screenHeight-bannerAd.style.realHeight-20;
+                    bannerAd.style.top = self.screenHeight-bannerAd.style.realHeight - 20;
                 }
+                
+                bannerAd.style.left = (self.screenWidth - bannerAd.style.realWidth )/2;
+                
                 self.bannerAdHeight = bannerAd.style.realHeight;
-
                 self.bottomPos = self.bannerAdHeight * self.ipx;
                 
                 bannerAd.show();
             });
             
             bannerAd.onError(err => {
-                
+                GameGlobal.UIManager.ShowPop(Constant.UIPop.UIDownApp);
             })
 
             this.bannerAd = bannerAd;
@@ -205,18 +220,18 @@ var AdsManager =  cc.Class({
             return;
         }
         //显示遮罩
-        GameGlobal.HintManager.ShowLoading();
+        //GameGlobal.HintManager.ShowLoading();
         var self = this;
         this.action = action;
         this.failAction = failAction;
         this.str = str;
         this.videoAd.load().then(() => 
         {
-            GameGlobal.HintManager.HideLoading();
+            //GameGlobal.HintManager.HideLoading();
         });
         this.videoAd.show().then(()=>
         {
-            GameGlobal.HintManager.HideLoading();
+            //GameGlobal.HintManager.HideLoading();
         });
         this.videoAd.onClose(res => {
             self.videoAd.offClose();
@@ -252,12 +267,40 @@ var AdsManager =  cc.Class({
     //注册分享事件
     AddShareEvent(action)
     {
-        var value = Math.floor(Math.random() * ShareStr.length);
-        this.ShareImg = SharePIC[value];
-        this.ShareString = ShareStr[value];
+        //分享弹窗
+        this.SharePop = ()=>
+        {
+            GameGlobal.HintManager.ShowModel("分享失败，请重新分享试试！",()=>
+            {
+                this.AddShareEvent(this.ShareEvent);
+                this.SharePop = null;
+            },()=>
+            {
+                if(this.ShareEvent!= null)
+                {
+                    this.ShareEvent = null;
+                } 
+                this.SharePop = null;
+            },"重新分享","#29a000","知道了","#333333");
+        } 
+
+        var actionImg= ()=>
+        {
+            var value = Math.floor(Math.random()*SharePIC.length);
+            this.ShareImg = SharePIC[value];
+            return this.ShareImg;
+        }
+
+        var actionTitle = ()=>
+        {
+            var value = Math.floor(Math.random()*SharePIC.length);
+            this.ShareString = ShareStr[value];
+            return this.ShareString;
+        }
+        
         wx.shareAppMessage({
-            title: this.ShareString,
-            imageUrl: this.ShareImg,
+            title: actionTitle(),
+            imageUrl: actionImg(),
         });
         this.ShareEvent = action;
     },

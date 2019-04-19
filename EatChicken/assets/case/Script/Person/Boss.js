@@ -12,6 +12,8 @@ cc.Class({
         this._super();
         this.isStartMove = false;
         this.isShake = true;
+        this.isBoss =  true;
+        GameGlobal.MsgCenter.on(Constant.Msg.NextLevel,this.NextLevel.bind(this));
     },
 
     update(dt)
@@ -42,7 +44,6 @@ cc.Class({
         if(this.isDeath)
             return;
         GameControl.HurtLabelAni(PowerCount,cc.v2(this.node.x,this.node.y + 30));
-        
         this.Health -= PowerCount;
         this.player.PlayInfo.LevelProgress = this.Health/this.TotalHealth;
         GameControl.playBoom(this.node.getPosition());
@@ -108,15 +109,20 @@ cc.Class({
                 this.player.GunCom.PaseAimed();
                 this.player.GunCom.GunSkin.node.rotation = 0;
             })
-           
-            var mm = cc.moveBy(0.5,200*this.dir,0);
-            var call = cc.callFunc(()=>
-            {
-                GameControl.NextLevel();
-            },this);
-            this.player.node.runAction(cc.sequence(s,call1,mm,call));
+            this.player.node.runAction(cc.sequence(s,call1));
         });
         this.node.runAction(cc.sequence(m,c));
+    },
+    
+    NextLevel()
+    {
+        this.player.GunCom.PaseAimed();
+        var mm = cc.moveBy(0.5,200*this.dir,0);
+        var call = cc.callFunc(()=>
+        {
+            GameControl.NextLevel();
+        },this);
+        this.player.node.runAction(cc.sequence(mm,call));
     },
 
     DropAction(isHitHead)

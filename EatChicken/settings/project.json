@@ -36,7 +36,6 @@
     "VideoPlayer",
     "WebView",
     "AudioSource",
-    "NodePool",
     "Native NetWork"
   ],
   "facebook": {
@@ -57,13 +56,13 @@
     "EnemyHead",
     "Bullet"
   ],
-  "last-module-event-record-time": 1553837777438,
+  "last-module-event-record-time": 1555291677185,
   "simulator-orientation": false,
   "simulator-resolution": {
     "height": 640,
     "width": 960
   },
-  "start-scene": "current",
   "use-customize-simulator": false,
-  "use-project-simulator-setting": false
+  "use-project-simulator-setting": false,
+  "start-scene": "current"
 }

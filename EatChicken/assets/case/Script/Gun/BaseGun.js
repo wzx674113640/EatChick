@@ -27,7 +27,7 @@ var BaseGun = cc.Class({
     },
 
     onLoad() {
-        this.RotateSpeed = 80;
+        this.RotateSpeed = 60;
         this.BulletPreba = null; //子弹预制体
         this.MoveState = "上";
         this.drawLine();

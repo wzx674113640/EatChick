@@ -17,6 +17,7 @@ cc.Class({
 
     setItem(data)
     {
+        this.node.active = true;
         this.data = data;
         var id = Number(data.id)-1;
         if(id == 0)
@@ -79,7 +80,7 @@ cc.Class({
             this.BulletCount.string = this.baseGun.TotalCount;
             this.BtnEqui.active = true;
             this.BtnSupply.active = false;
-            
+            GameGlobal.SeverManager.C2G_addbullet(this.data.id);
             //打开获取物品UI;
         });
     }

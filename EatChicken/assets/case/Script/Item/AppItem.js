@@ -49,17 +49,20 @@ cc.Class({
     //设置222
     set222Touch()
     {
+        
         if(this.MoreGameSprite != null)
         {
             this.Img.spriteFrame = this.MoreGameSprite;
         }   
         this.Img.node.targetOff(this);
-        var self = this;
+        
         this.Img.node.on(cc.Node.EventType.TOUCH_END, function(event)
         {
-            GameGlobal.SeverManager.AssociatedProgramEvent("wx43728d5e0bec2447","pages/index/index?scene=199","10000");
+            //GameGlobal.SeverManager.AssociatedProgramEvent("wx43728d5e0bec2447","pages/index/index?scene=218","10000");
+            GameGlobal.SeverManager.UIAppBox.active = true;
+            UIBtnApp.AppClick();
         },this);
-        this.setRedImg();
+        //this.setRedImg();
     },
 
     setRedImg()

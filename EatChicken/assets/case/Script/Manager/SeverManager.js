@@ -16,24 +16,52 @@ var SeverManager =  cc.Class({
         
         if (!CC_WECHATGAME)
             return;
+        
+        var self = this;
+        var Init = cc.find("Canvas").getComponent("GameInit")
+        var Data = Init.Data;
+        var infodata = Init.UserData;
+        if(Data)
+        {
+            this.UserInfo.openid = Data.openid,
+            this.UserInfo.id = Data.id;
+            this.UserInfo.nickName = Data.nick_name;
+            this.UserInfo.avatar_url = Data.avatar_url;
+            this.UserInfo.BestScore = Data.score;
+            
+            if(Data.nick_name == null||Data.nick_name == "null")
+            {
+                //授权
+                self.Authorization();
+            }
+            self.UserInfo.is_status = infodata.is_status;
+            self.UserInfo.CurrentGun = infodata.aid;
+            self.UserInfo.CurrentSkin = infodata.skin_id;
+            self.UserInfo.Coin = Number(infodata.gold);
+            self.UserInfo.CurrentBullet = infodata.bullet;
+            self.UserInfo.Score = infodata.score;
+            self.UserInfo.AppIDInfoList = Init.gamelist;
+            
+            //this.C2G_AppID(true);
+            this.C2G_hzlist();
+        }
+        else
+        {
+            console.error("获取不到服务器数据！！！！！！！！！！");
+        }
         var obj = wx.getLaunchOptionsSync();
         var Sence = obj.query.scene == undefined ? null : obj.query.scene;
         this._Sence = decodeURIComponent(Sence); //渠道过来的场景值
-       
+        this._AppID = obj.referrerInfo&&obj.referrerInfo.appId?obj.referrerInfo:"";
         this.gameID = 0;//当局游戏ID
+       
     },  
 
     start()
     {
         if (!CC_WECHATGAME)
             return;
-        GameGlobal.HintManager.ShowLoading();
-        this.Login().then((active)=>
-        {
-            this.C2G_User(active);
-            this.C2G_AppID(active);
-            GameGlobal.HintManager.HideLoading();
-        }); //登陆
+        //UIGameing.HomePageUI(self.UserInfo);
     },
 
     Login()
@@ -55,6 +83,7 @@ var SeverManager =  cc.Class({
                                 scene:self._Sence,
                                 version:self.UserInfo.version,
                                 uid:0,
+                                appid:self._AppID
                             },
                             success (res) {
                                 var Data =  res.data.data;
@@ -91,13 +120,13 @@ var SeverManager =  cc.Class({
     Authorization()
     {
         let width = this.UserInfo.screenWidth;
-        let height = this.UserInfo.screenHeigth;
+        let height = this.UserInfo.screenHeight;
         var ipx = this.UserInfo.ipx;
 
-        var RankLogo_Y =  510; //y坐标
-        var RankLogo_X =  3; //x坐标
-        var RankLogo_Width = 214; //宽
-        var RankLogo_Height = 86; //高 
+        var RankLogo_Y =  200; //y坐标
+        var RankLogo_X =  -292; //x坐标
+        var RankLogo_Width = 106; //宽
+        var RankLogo_Height = 135; //高 
 
         var _top = (height * ipx/2 + RankLogo_Y - RankLogo_Width/2)/ipx; //553 y，48 宽除以2
         var _left = (width * ipx/2 + RankLogo_X - RankLogo_Width/2)/ipx; //216.2 x
@@ -110,7 +139,7 @@ var SeverManager =  cc.Class({
                 top: _top,
                 width: RankLogo_Width/ipx,
                 height: RankLogo_Height/ipx,
-                textAlign: 'center',
+                textAlign: 'center'
             }
         });
 
@@ -164,10 +193,9 @@ var SeverManager =  cc.Class({
         }
     },
 
-    C2G_User(active)
+    C2G_User()
     {
-        if(!active)
-            return;
+       
         var self = this;
         wx.request({
             url: self.Domain + "act=user",
@@ -184,10 +212,11 @@ var SeverManager =  cc.Class({
                 self.UserInfo.is_status = infodata.is_status;
                 self.UserInfo.CurrentGun = infodata.aid;
                 self.UserInfo.CurrentSkin = infodata.skin_id;
-                self.UserInfo.Coin  = Number(infodata.gold);
+                self.UserInfo.Coin = Number(infodata.gold);
                 self.UserInfo.CurrentBullet = infodata.bullet;
                 self.UserInfo.Score = infodata.score;
-                GameGlobal.MsgCenter.emit(Constant.Msg.HomePage,self.UserInfo);
+                //GameGlobal.MsgCenter.emit(Constant.Msg.HomePage,self.UserInfo);
+                UIGameing.HomePageUI(self.UserInfo);
             },
             fail()
             {
@@ -200,28 +229,7 @@ var SeverManager =  cc.Class({
         });
     },
 
-    C2G_AppID(active)
-    {
-        if(!active)
-            return;
-        var self =this; 
-        wx.request({ 
-            url:  self.Domain + "act=gamelist",
-            data:
-            {
-                openid: self.UserInfo.openid,
-                version:self.UserInfo.version
-            },
-            success (res) 
-            {
-                var data = res.data.data;
-                
-                self.UserInfo.AppIDInfoList = data.gamelist;
-                
-                GameGlobal.UIManager.ShowApp(Constant.UIPop.BtnAppList);
-            }
-        })
-    },
+    
 
     //游戏开始
     C2G_GameStart()
@@ -329,7 +337,7 @@ var SeverManager =  cc.Class({
         });
     }, 
 
-    C2G_UserGun(gunID,action)
+    C2G_UserGun(gunID,action = null)
     {
         if(!CC_WECHATGAME)
             return;
@@ -342,7 +350,10 @@ var SeverManager =  cc.Class({
                 id:gunID
             },
             success (res) {
-                action();
+                if(!!action)
+                {
+                    action();
+                }
             }
         });
     },
@@ -382,7 +393,7 @@ var SeverManager =  cc.Class({
         });
     },
 
-    C2G_ChangeCoin(action,type,coin)
+    C2G_ChangeCoin(action,type,coin) //1加 -1减
     {
         if(!CC_WECHATGAME)
             return;
@@ -400,4 +411,106 @@ var SeverManager =  cc.Class({
             }
         });
     },
+
+    C2G_hzlist()
+    {
+        if(!CC_WECHATGAME)
+            return;
+        var self = this;
+        wx.request({
+            url: this.Domain + 'act=hzlist',
+            data:
+            {
+                openid:this.UserInfo.openid,
+                version:this.UserInfo.version,
+            },
+            success (res) {
+                self.UserInfo.hzlist = res.data.data;
+                GameGlobal.UIManager.ShowApp(Constant.UIPop.UIAppBox,(node)=>
+                {
+                    //node.getComponent("UIAppBox").ShowBox(res.data.data);
+                    //node.active = false;
+                    self.UIAppBox = node;
+                });
+            }
+        });
+    },
+    
+    C2G_fdcount(type = 0)
+    {
+        if(!CC_WECHATGAME)
+            return;
+        var self = this;
+        wx.request({
+            url: this.Domain + 'act=fdcount',
+            data:
+            {
+                openid:this.UserInfo.openid,
+                version:this.UserInfo.version,
+                type: type
+            },
+            success (res) {
+
+            }
+        });
+    },
+    
+    //皮肤列表
+    C2G_skinlist(action)
+    {
+        if(!CC_WECHATGAME)
+            return;
+        var self = this;
+        wx.request({
+            url: this.Domain + 'act=skinlist',
+            data:
+            {
+                openid:this.UserInfo.openid,
+                version:this.UserInfo.version,
+            },
+            success (res) {
+                action(res.data.data);
+            }
+        });
+    },
+
+    //使用皮肤
+    C2G_skinbut(id)
+    {
+        if(!CC_WECHATGAME)
+            return;
+        var self = this;
+        wx.request({
+            url: this.Domain + 'act=skinbut',
+            data:
+            {
+                openid:this.UserInfo.openid,
+                version:this.UserInfo.version,
+                id:id
+            },
+            success (res) {
+                
+            }
+        });
+    },
+
+    C2G_addbullet(id)
+    {
+        if(!CC_WECHATGAME)
+            return;
+        var self = this;
+        wx.request({
+            url: this.Domain + 'act=addbullet',
+            data:
+            {
+                openid:this.UserInfo.openid,
+                version:this.UserInfo.version,
+                id:id
+            },
+            success (res) {
+                
+            }
+        });
+    },
+
 });

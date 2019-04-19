@@ -1,4 +1,4 @@
-
+var SceneList = [0,1,2,3];
 
 cc.Class({
     extends: cc.Component,
@@ -6,7 +6,7 @@ cc.Class({
     properties: {
         LableCoin: cc.Label,
         LableScore: cc.Label,
-        LableLevel: cc.Label,
+        LevelComponet: cc.Component,
         LableEenmyName: cc.Label,
         LableBulletCount: cc.Label,
         ImgsHealth:
@@ -37,8 +37,78 @@ cc.Class({
         BtnHealthNode:cc.Node,
         UISupply:cc.Node,
         UICoinPanel:cc.Node,
-        UIGunPanel:cc.Node
+        UIGunPanel:cc.Node,
 
+        BtnGame:cc.Node,
+
+        Bg1:cc.Sprite,
+        Bg2:cc.Sprite,
+
+        startWall:cc.Sprite,
+        startBang:cc.Sprite,
+
+        CH_coinPos:cc.Node,
+        HealthVideoAni:cc.Animation
+    },
+
+    PlayHealthAni(active)
+    {
+        if(active)
+        {
+            this.HealthVideoAni.play("Scale");
+        }
+        else
+        {
+            this.HealthVideoAni.stop("Scale");
+        }
+    },
+
+    BtnClose()
+    {
+        if(GameGlobal.SeverManager.UserInfo.is_status == 1)
+        {
+            GameGlobal.SeverManager.UIAppBox.active = true;
+        }
+        else
+        {
+            GameGlobal.MsgCenter.emit(Constant.Msg.ReturnHomePage);
+            GameGlobal.MsgCenter.emit(Constant.Msg.AginGame,false);
+        }   
+    },
+    
+    changeScene()
+    {
+        var index = Math.floor(Math.random() * SceneList.length);
+
+        if(index == this.CurrentScene)
+        {
+            if(index  < SceneList.length - 1)
+            {
+                index ++;   
+            }
+            else if(index > 0)
+            {
+                index --;
+            }
+        }
+        
+        this.CurrentScene = index;
+        this.Bg1.spriteFrame = GameControl.Config.BgSpris[index];
+        this.Bg2.spriteFrame = GameControl.Config.BgSpris[index];
+
+        this.startWall.spriteFrame = GameControl.Config.WallSpris[index];
+        this.startBang.spriteFrame = GameControl.Config.BangSpris[index];
+
+        for(var i = 0;i < GameControl.wallList.length;i++)
+        {
+            GameControl.wallList[i].getComponent("Wall").ChangeItem(index);
+        }
+    },
+
+
+    OpenGameClick()
+    {
+        GameGlobal.SeverManager.UIAppBox.active = true;
     },
 
     setCoinStartPos()
@@ -81,14 +151,16 @@ cc.Class({
     
     CoinAni(action)
     {
-       var pos = cc.v2(this.LableCoin.node.parent.getPosition());
+       var pos = this.LableCoin.node.parent.parent.getPosition();
+      
        this.UIAni(action,this.ImgCoin,pos);
     },
 
     HealthAni(action)
     {
-        var pos = cc.v2(this.ImgsHealth[0].parent.getPosition());  
-        this.UIAni(action,this.ImgHealth,pos);
+        var pos = this.LableCoin.node.parent.parent.getPosition();  
+        var pos1 = cc.v2(pos.x,pos.y - 40);
+        this.UIAni(action,this.ImgHealth,pos1);
     },
 
     UIAni(action,mnode,pos)
@@ -106,7 +178,7 @@ cc.Class({
     {
         GameGlobal.AdsManager.SeeVideoEvent(()=>
         {
-            if(GameControl.player.PlayInfo.Health<3)
+            if(GameControl.player.PlayInfo.Health < 3)
             {
                 GameControl.player.UIBlood(1);
             }
@@ -120,15 +192,24 @@ cc.Class({
     },
 
     onLoad() {
-
+        this.CurrentScene = 0;
         window.UIGameing = this; 
+        GameGlobal.UIManager.ShowApp(Constant.UIPop.BtnAppList);
+        UIGameing.ShowMoreGame();
         var manager = cc.director.getCollisionManager();
         manager.enabled = true;
         this.HeadPos = this.HeadCountUI.getPosition();
         this.SoundUI();
+        //适配UI
+        this.HomeCoin.node.parent.y = GameGlobal.SeverManager.UserInfo.MeansY;
+        this.CH_coinPos.y = GameGlobal.SeverManager.UserInfo.MeansY;
+
         GameGlobal.MsgCenter.on(Constant.Msg.HomePage,this.HomePageUI.bind(this)); //数据更新改变UI
         GameGlobal.MsgCenter.on(Constant.Msg.ReturnHomePage,this.returnHomePage.bind(this)); //返回首页
         GameGlobal.MsgCenter.on(Constant.Msg.ChangCoin,this.ChangCoin.bind(this));
+        GameGlobal.MsgCenter.on(Constant.Msg.PlayHealthAni,this.PlayHealthAni.bind(this));
+        this.HomePageUI();
+        GameGlobal.AdsManager.ShowOrHideAdervert(true);
     },
     
     SoundUI()
@@ -168,11 +249,10 @@ cc.Class({
         GameGlobal.SoundManager.PlayMusic("Bg");
     },
 
-    HomePageUI(data)
+    HomePageUI()
     {
-        GameControl.GameStart();
-        this.HomeCoin.string = data.Coin;
-        this.HomeScore.string = data.Score;
+        this.HomeCoin.string = GameGlobal.SeverManager.UserInfo.Coin;
+        this.HomeScore.string = GameGlobal.SeverManager.UserInfo.Score;
     },
 
     ChangCoin(Coin)
@@ -195,7 +275,7 @@ cc.Class({
 
     setLevel(count)
     {
-        this.LableLevel.string = count;
+        this.LevelComponet.setLevel(count);
     },
 
     setEenmyName(name)
@@ -262,9 +342,17 @@ cc.Class({
         this.StartUI.active  = false;
         this.UI.active = true;
         GameControl.player.GunCom.AgainAimed();
-        GameGlobal.AdsManager.ShowOrHideAdervert(true);
         GameGlobal.SeverManager.ShowHideButton(false);
         GameGlobal.SeverManager.C2G_GameStart();
+       
+   },
+
+   ShowMoreGame()
+   {
+        if(GameGlobal.SeverManager.UserInfo.is_status == 1)
+        {
+            this.BtnGame.active = true;
+        }
    },
 
    returnHomePage()
@@ -272,13 +360,19 @@ cc.Class({
         this.StartUI.active  = true;
         this.UI.active = false;
         this.BtnHealthNode.active = true;
-        GameGlobal.AdsManager.ShowOrHideAdervert(false);
+        //GameGlobal.AdsManager.ShowOrHideAdervert(false);
         GameGlobal.SeverManager.ShowHideButton(true);
    },
 
    BtnUIRanking()
    {
         GameGlobal.UIManager.ShowPop(Constant.UIPop.UIRanking);
+   },
+
+   BtnSkining()
+   {
+        //GameGlobal.HintManager.ShowToast("开发中");
+        GameGlobal.UIManager.ShowPop(Constant.UIPop.UISkin);
    },
 
    BtnGun()

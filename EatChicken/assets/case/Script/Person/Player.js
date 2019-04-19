@@ -29,6 +29,7 @@ cc.Class({
 
         GameGlobal.MsgCenter.on(Constant.Msg.Resurrection,this.Resurrection.bind(this));
         GameGlobal.MsgCenter.on(Constant.Msg.UserGun,this.ChangeGun1.bind(this));
+        GameGlobal.MsgCenter.on(Constant.Msg.UseSkin,this.UseSkinEvent.bind(this));
         this.StartPos = this.node.getPosition();
         this.gameControl = this.UIGameing.getComponent("GameControl");
         this.resetUpdate();
@@ -79,6 +80,11 @@ cc.Class({
             }
         },this);
         
+    },
+
+    UseSkinEvent(skinid)
+    {
+        this.Skin.spriteFrame = GameControl.Config.PlaySkins[skinid-1];
     },
 
     Shit()
@@ -182,7 +188,7 @@ cc.Class({
             this.gameControl.UserInfo.SaveBullet();
         }
         GameGlobal.SeverManager.C2G_GameOver(this.PlayInfo.Score,this.PlayInfo.Level,coin);
-        GameGlobal.SubManager.BeyondFriend();
+        GameGlobal.SubManager.BeyondFriend(this.PlayInfo.Score);
     },
     
     Resurrection()

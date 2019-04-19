@@ -38,7 +38,7 @@ cc.Class({
             }
         }
         var len = data.length;
-        var value = ((len-len % 5)/5)+1;
+        var value = Math.ceil(len/5); 
         this.LablePage.string = (this.currentPage + 1) +"/"+ value;
     },
     

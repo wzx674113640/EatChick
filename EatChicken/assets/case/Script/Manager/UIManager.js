@@ -62,11 +62,15 @@ var UIManager = cc.Class({
         });
     },
 
-    ShowApp(uiname)
+    ShowApp(uiname,action = null)
     {
         return this.CreatorUI(uiname, this.UIApp).then((node)=>{
             if (node != null) {
                 node.active = true;
+            }
+            if(action!= null)
+            {
+                action(node);
             }
         });
     },

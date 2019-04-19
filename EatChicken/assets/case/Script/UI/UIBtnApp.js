@@ -15,11 +15,16 @@ cc.Class({
         UIRed:cc.Node
     },
 
+    onLoad()
+    {
+        window.UIBtnApp = this;
+    },
+
     start () {
         this.isOpen = false;
-        var appList =  GameGlobal.SeverManager.UserInfo.AppIDInfoList;
-        var appListlenth = appList.length ;
-        this.ShowItem(appList,appListlenth);
+        this.appList =  GameGlobal.SeverManager.UserInfo.AppIDInfoList;
+        this.appListlenth = this.appList.length;
+        this.ShowItem(this.appList,this.appListlenth);
     },
 
     AppClick()
@@ -41,12 +46,21 @@ cc.Class({
             this.BtnAppList.getComponent(cc.Sprite).spriteFrame = this.BtnAppListSprite[1];
             this.Mask.active = false;
             this.UIRed.active = false;
+            this.appList.sort(function()
+            {
+                return (0.5-Math.random());
+            });
+            this.ShowItem(this.appList,this.appListlenth);
         }
     },
+    
     ShowItem(AppIDInfoList,Applength)
     {
+        if(GameGlobal.SeverManager.UserInfo.is_status == 0)
+            return;
         var leftLenght = this.LeftAppNodeList.children.length;
         var appitem = this.LeftAppNodeList.children[0];
+      
         for(var i = 0;i <= Applength;i++)
         {
             if(Applength == i)

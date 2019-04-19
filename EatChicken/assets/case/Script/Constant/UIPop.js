@@ -8,7 +8,10 @@ var UIPop =  cc.Class({
         UIGun:"UIGun",
         UISupply: "UISupply",
         BtnAppList:"BtnAppList",
-        UIGameOver:"UIGameOver"
+        UIGameOver:"UIGameOver",
+        UIAppBox:"UIAppBox",
+        UISkin:"UISkin",
+        UIDownApp:"UIDownApp"
     },
 
 });

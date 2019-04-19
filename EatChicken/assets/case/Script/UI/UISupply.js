@@ -20,7 +20,8 @@ cc.Class({
     onEnable() 
     {
         var length = this.GunList.length;
-        var PageCount = ( length - length % 3) / 3 + 1;
+        //var PageCount = ( length - length % 3) / 3 + 1;
+        var PageCount = Math.ceil(length/3);
         var instanCount = PageCount - this.PageConent.children.length;
         if(instanCount>0)
         {
@@ -39,8 +40,10 @@ cc.Class({
                 var item =  cc.instantiate(this.SupplyItemNode);
                 item.parent = this.PageConent.children[index];
             }
-
-            this.PageConent.children[index].children[i-3*index].getComponent("SupplyItem").setItem(this.GunList[i]);
+            if (!!this.GunList[i].title)
+            {
+                this.PageConent.children[index].children[i-3*index].getComponent("SupplyItem").setItem(this.GunList[i]);
+            }
         }
     },
     

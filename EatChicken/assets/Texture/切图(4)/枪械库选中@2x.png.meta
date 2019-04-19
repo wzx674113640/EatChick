@@ -1,0 +1,31 @@
+{
+  "ver": "2.2.0",
+  "uuid": "7baee0f2-786c-4b69-9c3f-9c1e2f0cfcb9",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "subMetas": {
+    "枪械库选中@2x": {
+      "ver": "1.0.3",
+      "uuid": "39413f5c-f252-4cb5-9c34-ed0161af6ec3",
+      "rawTextureUuid": "7baee0f2-786c-4b69-9c3f-9c1e2f0cfcb9",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 172,
+      "height": 194,
+      "rawWidth": 172,
+      "rawHeight": 194,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

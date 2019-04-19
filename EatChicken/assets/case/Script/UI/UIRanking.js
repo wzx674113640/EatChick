@@ -41,6 +41,7 @@ cc.Class({
         }
         this.ShowFrienRank();
         GameGlobal.SeverManager.ShowHideButton(false);
+        GameGlobal.AdsManager.AdervertActive(false);
     },
 
     onDisable()
@@ -48,6 +49,7 @@ cc.Class({
         this.isLoadJson = false;
         this.currentPage = 0;
         GameGlobal.SeverManager.ShowHideButton(true);
+        GameGlobal.AdsManager.AdervertActive(true);
     },
     
     ShowFrienRank()
@@ -131,6 +133,7 @@ cc.Class({
     FlockRank()
     {   
         //分享
+        GameGlobal.AdsManager.AddShareEvent();
     },
 
     BtnClose()

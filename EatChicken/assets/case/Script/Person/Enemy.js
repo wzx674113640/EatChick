@@ -10,6 +10,7 @@ var Enemy =  cc.Class({
     onLoad () {
         this._super();
         this.targetPos = this.node.getPosition();
+        this.isBoss = false;
     },
 
     DropBlood(PowerCount,isHitHead = false)
@@ -39,7 +40,7 @@ var Enemy =  cc.Class({
             GameControl.ResetHeadCount();
         }
     },
-
+    
     //彩蛋
     colorEgg()
     {
@@ -117,7 +118,6 @@ var Enemy =  cc.Class({
     setPos(pos,dir = null)
     {
         this.unscheduleAllCallbacks();
-        //this.Health = Health;
         var gunID = Math.floor(Math.random()*10);
         this.ChangeGun(gunID);
        
@@ -126,7 +126,7 @@ var Enemy =  cc.Class({
             this.node.scaleX = dir;
             this.dir = dir;
         }
-        var _data = GameControl.randomSkin();
+        var _data = GameControl.randomSkin(this.isBoss);
         this.Skin.spriteFrame = _data.skin;
         GameControl.currentEnemy = this;
         this.isDeath = false;
@@ -150,16 +150,17 @@ var Enemy =  cc.Class({
         {
             if(this.Health == startHeadlth)
             {
-                if(this.player.PlayInfo == 0)
+                if(this.player.PlayInfo.Level <= 1 && GameControl.KillNumber < 3)
                 {
-                    var randomRotation = 45 - Math.floor(Math.random()*90);
-                    
+                    var x = this.node.x - this.player.node.x;
+                    var y = this.node.y - this.player.node.y;
+                    var randomRotation =  (Math.atan(Math.abs(y/x)) * 180 / Math.PI)-10;
                 }
                 else
                 {
                     var x = this.node.x - this.player.node.x;
                     var y = this.node.y - this.player.node.y;
-                    var randomRotation =  -Math.atan(Math.abs(y/x)) * 180 / Math.PI;
+                    var randomRotation = - Math.atan(Math.abs(y/x)) * 180 / Math.PI;
                 }
                 var r =  cc.rotateTo(0.25,randomRotation);
                 var c = cc.callFunc(()=>

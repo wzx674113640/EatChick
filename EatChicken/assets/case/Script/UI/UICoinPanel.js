@@ -4,8 +4,15 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        CoinLabel:cc.Label
+        CoinLabel:cc.Label,
+        AppLayout:cc.Node,
     },
+
+    onload()
+    {
+        this.isfirst = true;
+    },
+
 
     onEnable()
     {
@@ -13,11 +20,36 @@ cc.Class({
         var index = Math.floor(Math.random()*CoinList.length);
         this.Coin =  CoinList[index];
         this.CoinLabel.string = "金币+" + this.Coin;
+        
+        if(GameGlobal.SeverManager.UserInfo.is_status == 0)
+        {
+            this.AppLayout.parent.active = false;
+            return;
+        }
+        GameGlobal.SeverManager.C2G_fdcount(1);
+        
+        /*
+        this.UserInfo = GameGlobal.SeverManager.UserInfo;
+        var AppInfoList = this.UserInfo.AppIDInfoList;
+       
+        AppInfoList.sort(function() 
+        {
+                return (0.5-Math.random());
+        })
+        for(var i = 0;i< this.AppLayout.children.length;i++)
+        {
+            this.AppLayout.children[i].getComponent("AppItem").setItem(AppInfoList[i],()=>
+            {
+                GameGlobal.SeverManager.C2G_fdcount(2);
+            });
+        }
+        */
     },
 
     BtnClose()
     {
         this.node.active = false;
+        GameGlobal.MsgCenter.emit(Constant.Msg.NextLevel);
     },
 
     BtnGet()
@@ -26,6 +58,7 @@ cc.Class({
         {
             GameGlobal.MsgCenter.emit(Constant.Msg.ChangCoin,this.Coin);
             this.node.active = false;
+            GameGlobal.MsgCenter.emit(Constant.Msg.NextLevel);
         }
         if(GameGlobal.SeverManager.UserInfo.is_status != 1)
         {
@@ -37,11 +70,11 @@ cc.Class({
         }
         else
         {
-            //分享
-            GameGlobal.AdsManager.AddShareEvent(()=>
+            GameGlobal.AdsManager.SeeVideoEvent(()=>
             {
                 action();
             });
+        
         }
     }
 });

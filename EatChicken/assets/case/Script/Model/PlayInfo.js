@@ -61,6 +61,14 @@ var PlayInfo =  cc.Class({
                 this._health = value;
                 if(UIGameing)
                 {
+                    if(this._health == 1)
+                    {
+                        GameGlobal.MsgCenter.emit(Constant.Msg.PlayHealthAni,true);
+                    }
+                    else
+                    {   
+                        GameGlobal.MsgCenter.emit(Constant.Msg.PlayHealthAni,false);
+                    }   
                     GameControl.player.Health = value;
                     UIGameing.setImgHealth(this._health);
                 }
@@ -124,6 +132,11 @@ var PlayInfo =  cc.Class({
     {
         this.Level++;
         this.LevelProgress = 0;
+        if(this.Level % 2 == 0)
+        {
+            GameGlobal.AdsManager.ShowOrHideAdervert(false);
+            GameGlobal.AdsManager.ShowOrHideAdervert(true);
+        }
     },
 
     Resurrection()

@@ -12,7 +12,7 @@ cc.Class({
         this.Title = this.node.getChildByName("Title").getComponent(cc.Label);
         this.BtnStartGame = this.node.getChildByName("BtnStartGame");
         this.Title.string = "子包加载完成";
-       
+        
     },
     
     start()

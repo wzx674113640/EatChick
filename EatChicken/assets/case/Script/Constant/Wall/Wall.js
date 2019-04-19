@@ -13,11 +13,16 @@ cc.Class({
         */
         railUI:cc.Node,
         
+
         ItemsUI:
         {
             type:cc.Node,
             default:[]
         },
+        
+        Wall: cc.Sprite,
+        Bang: cc.Sprite,
+        Light:cc.Sprite
     },
 
    
@@ -26,24 +31,13 @@ cc.Class({
         this.startRailUIWidth = this.railUI.width;
     },
 
-    ShowOneCoin()
+    ChangeItem(index)
     {
-        this.ImgCoin.active = true;
+        this.Wall.spriteFrame = GameControl.Config.WallSpris[index];
+        this.Bang.spriteFrame = GameControl.Config.BangSpris[index];
+        this.Light.spriteFrame = GameControl.Config.LightSpris[index];
     },
 
-
-    OneCoinAni()
-    {
-        var m = cc.moveTo(0.8,cc.v2(0,y));
-
-        var call = cc.callFunc(()=>
-        {
-            this.ImgCoin.active = false;
-            GameGlobal.MsgCenter.emit(Constant.Msg.ChangCoin,2);
-        },this);
-        this.ImgCoin.runAction(cc.sequence(m,call));
-    },
-    
     Init(dir,lastPos)
     {
         WallInfo.setLevel(GameControl.player.PlayInfo.Level);
@@ -56,6 +50,7 @@ cc.Class({
 
         this.railUI.width = this.startRailUIWidth;
         this.node.width = this.RandomTwo(this.MinWidth,this.MaxWidth);
+        this.Wall.node.width = this.node.width;
         var coe = this.node.width/this.startWidth;
         this.railUI.width = this.railUI.width * coe;
         var Height = this.RandomTwo(this.MinHeight,this.MaxHeight);

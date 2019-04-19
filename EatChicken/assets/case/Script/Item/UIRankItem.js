@@ -12,15 +12,23 @@ cc.Class({
         },
         ImgHead:cc.Sprite,
         LabelNickName:cc.Label,
-        LabelScore:cc.Label
+        LabelScore:cc.Label,
+        HeadSpri: cc.SpriteFrame
     },
     
     setInfo(data)
     {
         this.LabelRank.string = data.num;
-        GameGlobal.HelperManager.createImage(data.avatar_url,this.ImgHead);
+        if(data.avatar_url == "")
+        {
+            this.ImgHead.spriteFrame = this.HeadSpri;
+        }
+        else
+        {
+            GameGlobal.HelperManager.createImage(data.avatar_url,this.ImgHead);
+        }
         let nick = data.nick_name.length <= 8 ? data.nick_name : data.nick_name.substr(0, 8) + "...";
-        this.LabelNickName.string = nick;
+        this.LabelNickName.string = nick == "null"? "游客" : nick;
         this.LabelScore.string = data.score;
         if(data.num<=3)
         {

@@ -5,10 +5,12 @@ cc.Class({
 
     properties: {
         GunID:0,
-        BtnUse:cc.Node,
-        Useing:cc.Node,
-        Use: cc.Node,
-        BtnLoack: cc.Node,
+        Has:cc.Node,
+        HasNoUse:cc.Node,
+        NoHas:cc.Node,
+        BtnGetBullet:cc.Node,
+
+
         Title:cc.Label,
         ImgGun:cc.Sprite,
 
@@ -48,27 +50,35 @@ cc.Class({
     //使用枪支
     BtnUseGun()
     {
-        GameGlobal.SeverManager.C2G_UserGun(this.GunID,()=>
+        if(this.State == "NoUes")
         {
-            this.UseingState();
-            var data = {};
-            data.gunID = this.GunID;
-            if(data.gunID == 1)
+            GameGlobal.SeverManager.C2G_UserGun(this.GunID,()=>
             {
-                data.bullet = 9999; 
-            }
-            else
-            {
-                data.bullet = this.Bullet;
-            }
-            data.PaseAimed = true;
-            GameGlobal.MsgCenter.emit(Constant.Msg.UserGun,data);
-            
-        });
+                this.UseingState();
+                var data = {};
+                data.gunID = this.GunID;
+                if(data.gunID == 1)
+                {
+                    data.bullet = 9999; 
+                }
+                else
+                {
+                    data.bullet = this.Bullet;
+                }
+                data.PaseAimed = true;
+                GameGlobal.MsgCenter.emit(Constant.Msg.UserGun,data);
+                
+            });
+        }
+        else if(this.State == "LockState")
+        {
+            GameGlobal.HintManager.TitlePop("该枪支未解锁");
+        }
     },
 
     SetState(state,ID,name,mybullet,bullet) //0 未解锁 1//未使用 //2已使用
     {
+        this.TitolBullet = bullet;
         this.GunID = Number(ID);
         if(ID == 1)
         {
@@ -81,7 +91,7 @@ cc.Class({
             this.Bullet = Number(mybullet);
         }
         
-        this.LabelCount.string = "子弹" + GameControl.Config.GunItems[this.GunID-1].getComponent("BaseGun").Count;
+        this.LabelCount.string = "子弹" + (GameControl.Config.GunItems[this.GunID-1].getComponent("BaseGun").Count + 1);
         this.LabelPower.string = "伤害" + GameControl.Config.GunItems[this.GunID-1].getComponent("BaseGun").Power;
 
         
@@ -104,45 +114,61 @@ cc.Class({
         }
     },
 
+    BtnBulletClick()
+    {
+        var self = this;
+        GameGlobal.AdsManager.SeeVideoEvent(()=>
+        {
+            self.Bullet = self.TitolBullet;
+            self.LabelBulletCount.string = self.Bullet + "/" + self.TitolBullet;
+            self.BtnGetBullet.active = false;
+            GameGlobal.SeverManager.UserInfo.GetBullet(self.GunID,self.Bullet);
+            var data = {};
+            data.gunID = self.GunID;
+            data.bullet = self.TitolBullet;
+            if(self.GunID == 1)
+            {
+                data.bullet = 9999;
+            }
+            data.PaseAimed = true;
+            GameGlobal.MsgCenter.emit(Constant.Msg.UserGun,data);
+            GameGlobal.SeverManager.C2G_addbullet(self.GunID);
+        });
+    },
+
     //使用状态
     UseingState()
     {
         this.State = "Useing";
-        this.Use.active = false;
-        this.Useing.active = true;
-        this.BtnLoack.active = false;
-        this.BtnUse.active = false;
-
-        this.LabelBulletCount.node.parent.active = true;
-        this.LabelCount.node.active = true;
-        this.LabelPower.node.active = true;
+        this.Has.active = true;
+        this.HasNoUse.active = false;
+        this.NoHas.active = false;
+        
+        if(this.GunID != 1 && this.Bullet <= 0)
+        {
+            this.BtnGetBullet.active = true;
+        }
+        else
+        {
+            this.BtnGetBullet.active = false;
+        }
     },
-
+    
     //未使用状态
     NoUseState()
     {
         this.State = "NoUes";
-        this.Use.active = true;
-        this.Useing.active = false;
-        this.BtnLoack.active = false;
-        this.BtnUse.active = true;
-        
-        this.LabelBulletCount.node.parent.active = true;
-        this.LabelCount.node.active = true;
-        this.LabelPower.node.active = true;
+        this.Has.active = false;
+        this.HasNoUse.active = true;
+        this.NoHas.active = false;
     },
 
     //未解锁状态
     LockState()
     {
         this.State = "LockState";
-        this.Use.active = false;
-        this.Useing.active = false;
-        this.BtnLoack.active = true;
-        this.BtnUse.active = false;
-        
-        this.LabelBulletCount.node.parent.active = false;
-        this.LabelCount.node.active = false;
-        this.LabelPower.node.active = false;
+        this.Has.active = false;
+        this.HasNoUse.active = false;
+        this.NoHas.active = true;
     }
 });

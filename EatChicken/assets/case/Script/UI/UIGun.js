@@ -16,29 +16,47 @@ cc.Class({
         this.Gun250 = [];
         this.Gun500 = [];
     },
-
+    
     onEnable()
     {
+        GameGlobal.AdsManager.AdervertActive(false);
         GameGlobal.SeverManager.C2G_GunList((res)=>
         {
             var data = res.data.data;
             for(var i = 0;i<data.length;i++)
             {   
-                if(i<5)
+                if(data[i].gold == 250 || data[i].gold == 0)
                 {
                     if(data[i].status == 0)
                     {
                         this.Gun250.push(data[i].id);
                     }
-                    this.GunItems1[i].getComponent("GunItem").SetState(data[i].status,data[i].id,data[i].title,data[i].mybullet,data[i].bullet);
+                    if(i > 9)
+                    {
+                        var index1 = i - 5;
+                    }
+                    else
+                    {
+                        var index1 = i;
+                    }
+                    this.GunItems1[index1].active = true;
+                    this.GunItems1[index1].getComponent("GunItem").SetState(data[i].status,data[i].id,data[i].title,data[i].mybullet,data[i].bullet);
                 }
-                else if(i>=5)
+                else if(data[i].gold == 500)
                 {
                     if(data[i].status == 0)
                     {
                         this.Gun500.push(data[i].id);
                     }
-                    var index= i-5;
+                    if(i > 9)
+                    {
+                        var index = i- 9;
+                    }
+                    else
+                    {
+                        var index = i-5;
+                    }
+                    this.GunItems2[index].active = true;
                     this.GunItems2[index].getComponent("GunItem").SetState(data[i].status,data[i].id,data[i].title,data[i].mybullet,data[i].bullet);
                 }
             }
@@ -51,6 +69,7 @@ cc.Class({
         this.Gun250 = [];
         this.Gun500 = [];
         GameGlobal.SeverManager.ShowHideButton(true);
+        GameGlobal.AdsManager.AdervertActive(true);
     },
 
     BtnClose()
@@ -64,11 +83,17 @@ cc.Class({
         var index = this.pageView.getCurrentPageIndex();
         if(index == 0)
         {
-            if(totalCoin >=250 )
+            if(totalCoin >= 250)
             {
                 var index = Math.floor(Math.random()*this.Gun250.length);
                 var gunID = Number(this.Gun250[index]);
                 this.Gun250.splice(index, 1); 
+                GameGlobal.SeverManager.C2G_BuyGun(gunID,(res)=>
+                {
+                    GameGlobal.MsgCenter.emit(Constant.Msg.BuyGun,gunID); //监听使用枪
+                    GameGlobal.MsgCenter.emit(Constant.Msg.ChangCoin,-250);
+                    GameGlobal.HintManager.ShowToast("解锁成功！");
+                });
             }
             else
             {
@@ -87,6 +112,12 @@ cc.Class({
                 var index = Math.floor(Math.random()*this.Gun500.length);
                 var gunID = Number(this.Gun500[index]);
                 this.Gun500.splice(index, 1); 
+                GameGlobal.SeverManager.C2G_BuyGun(gunID,(res)=>
+                {
+                    GameGlobal.MsgCenter.emit(Constant.Msg.BuyGun,gunID); //监听使用枪
+                    GameGlobal.MsgCenter.emit(Constant.Msg.ChangCoin,-500);
+                    GameGlobal.HintManager.ShowToast("解锁成功！");
+                });
             }
             else
             {
@@ -98,11 +129,7 @@ cc.Class({
                 return;
             }
         }
-        GameGlobal.SeverManager.C2G_BuyGun(gunID,(res)=>
-        {
-            GameGlobal.MsgCenter.emit(Constant.Msg.BuyGun,gunID); //监听使用枪
-            GameGlobal.MsgCenter.emit(Constant.Msg.ChangCoin,-250*(index+1));
-        });
+       
     },
 
     

@@ -45,7 +45,9 @@ var HelperManager =  cc.Class({
     } ,
 
     LoaderImage(url,_sprite) {
+
         var index = -1;
+        
         for(var i = 0;i<this.urlList.length;i++)
         {
             if(url == this.urlList[i])
@@ -54,6 +56,7 @@ var HelperManager =  cc.Class({
                 break;
             }
         }
+        
         if(index==-1)
         {
             var self = this;

@@ -92,7 +92,7 @@ var BasePerson = cc.Class({
         }
         this.Health -= PowerCount;
     },
-
+    
     //挂了
     Death()
     {

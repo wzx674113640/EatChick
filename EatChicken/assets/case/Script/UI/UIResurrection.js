@@ -3,70 +3,93 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-       LabelTimer : cc.Label,
-       LabelLevel : cc.Label,
-       Not:cc.Widget
+        AppLayout: cc.Node,
+
+        ResurrectionNode:cc.Node,
+        GetGunNode: cc.Node,
+        HitEggNode:cc.Node,
+        CoinPanel:cc.Node
     },
+
+    onLoad()
+    {
+       
+    },  
 
     onEnable()
     {
-        this.LabelLevel.string = GameControl.player.PlayInfo.Level;
-        this.timer = 9;
-        this.coolTimer = this.timer;
-        this.LabelTimer.string = this.coolTimer;
-        this.onceTimer = 0;
-        this.isStartTimer = true;
-        GameGlobal.SubManager.ShowSub();
-        this.Not.Target = cc.find("Canvas");
-        this.Not.bottom = GameGlobal.AdsManager.bottomPos + 60;
-    },
-
-    onDisable()
-    {
-        GameGlobal.SubManager.HideSub();
+       this.ResurrectionNode.active = true;
+       this.GetGunNode.active = false;
+       this.HitEggNode.active = false;
+       this.CoinPanel.active = false;
+    
+       if(GameGlobal.SeverManager.UserInfo.is_status == 0)
+       {
+           this.AppLayout.parent.active = false;
+           return;
+       }
+       /*
+       this.UserInfo = GameGlobal.SeverManager.UserInfo;
+       var AppInfoList = this.UserInfo.AppIDInfoList;
+       AppInfoList.sort(function() 
+       {
+            return (0.5-Math.random());
+       })
+       for(var i = 0;i< this.AppLayout.children.length;i++)
+       {
+           this.AppLayout.children[i].getComponent("AppItem").setItem(AppInfoList[i]);
+       }
+       */
     },
 
     BtnSeeResurrection()
     {
-        this.isStartTimer = false;
         var self = this;
-        GameGlobal.AdsManager.SeeVideoEvent(()=>
+        var action = ()=>
         {
             GameGlobal.MsgCenter.emit(Constant.Msg.Resurrection);
-            self.node.active = false;
-        },()=>
+            this.node.active = false;
+        }
+        if(GameGlobal.SeverManager.UserInfo.is_status == 0)
         {
-            this.isStartTimer = true;
-        },
-        ()=>
+            GameGlobal.AdsManager.SeeVideoEvent(()=>
+            {
+                action();
+            });
+        }
+        else
         {
-            this.isStartTimer = true;
-        });
+            GameGlobal.AdsManager.AddShareEvent(()=>
+            {
+                action();
+            });
+        }
+    },
+
+    BtnCoinResurrection()
+    {
+        var self = this;
+        if(GameGlobal.SeverManager.UserInfo.Coin < 50)
+        {   
+            GameGlobal.HintManager.TitlePop("金币不足");
+        }   
+        else
+        {
+            GameGlobal.SeverManager.C2G_ChangeCoin(()=>
+            {
+                GameGlobal.MsgCenter.emit(Constant.Msg.ChangCoin,-50);
+                GameGlobal.MsgCenter.emit(Constant.Msg.Resurrection);
+                this.node.active = false;
+            },-1,50);
+        }
     },
 
     BtnTanks()
     {
-        this.node.active = false;
-        //GameGlobal.MsgCenter.emit(Constant.Msg.ReturnHomePage);
-        //GameGlobal.MsgCenter.emit(Constant.Msg.AginGame,false);
+        //this.ResurrectionNode.active = false;
+        //this.GetGunNode.active = true;
+        this.node.active = false; 
         GameGlobal.UIManager.ShowPop(Constant.UIPop.UIGameOver);
     },
     
-    update(dt)
-    {
-        if(!this.isStartTimer)
-            return;
-        this.onceTimer += dt;
-        if(this.onceTimer>=1)
-        {
-            this.onceTimer = 0;
-            this.coolTimer--;
-            this.LabelTimer.string = this.coolTimer;
-            
-            if(this.coolTimer < 0)
-            {
-                this.BtnTanks();
-            }
-        }
-    }
 });

@@ -1,0 +1,33 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "Hammer",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.05,
+  "sample": 60,
+  "speed": 0.1,
+  "wrapMode": "1",
+  "curveData": {
+    "props": {
+      "rotation": [
+        {
+          "frame": 0,
+          "value": 0
+        },
+        {
+          "frame": 0.016666666666666666,
+          "value": 43
+        },
+        {
+          "frame": 0.03333333333333333,
+          "value": -20
+        },
+        {
+          "frame": 0.05,
+          "value": 0
+        }
+      ]
+    }
+  },
+  "events": []
+}

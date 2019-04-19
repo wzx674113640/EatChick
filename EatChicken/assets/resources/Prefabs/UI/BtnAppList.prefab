@@ -80,7 +80,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Sprite(Splash)",
+    "_name": "Mask",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -350,8 +350,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 77,
-      "height": 71
+      "width": 76,
+      "height": 70
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -498,7 +498,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "ad23b3c6-5f44-4e20-937c-499ea5103c39"
+      "__uuid__": "93d80a65-c63c-404d-a7b7-f5a20c2550a2"
     },
     "_type": 1,
     "_sizeMode": 1,
@@ -1306,10 +1306,10 @@
     },
     "BtnAppListSprite": [
       {
-        "__uuid__": "6d5d8e71-811f-4cec-84db-4543f6570db9"
+        "__uuid__": "e254c461-ffbc-477d-83fa-1e115a133e44"
       },
       {
-        "__uuid__": "ad23b3c6-5f44-4e20-937c-499ea5103c39"
+        "__uuid__": "93d80a65-c63c-404d-a7b7-f5a20c2550a2"
       }
     ],
     "ScrollView": {

@@ -13,7 +13,7 @@ var userInfo =  cc.Class({
         CurrentSkin:1,//当前的皮肤
         
         screenWidth:0,
-        screenHeigth:0,
+        screenHeight:0,
         ipx:0,
 
         openid:0,
@@ -27,7 +27,8 @@ var userInfo =  cc.Class({
         is_status:1,//审核状态  默认非审核状态
 
         views:null,// 进入游戏后跳转其他游戏的页面 数据
-        AppIDInfoList:null// 导出游戏的图标数据
+        AppIDInfoList:null,// 导出游戏的图标数据
+        hzlist: null
     },
 
     ctor()
@@ -40,10 +41,13 @@ var userInfo =  cc.Class({
         if(!CC_WECHATGAME)
             return;
         var sysInfo = window.wx.getSystemInfoSync();
+        this.MeansButtonInfo = wx.getMenuButtonBoundingClientRect();
+       
         this.sysInfo = sysInfo;
         this.screenWidth = sysInfo.screenWidth;
-        this.screenHeigth = sysInfo.screenHeight;
+        this.screenHeight = sysInfo.screenHeight;
         this.ipx = 750/this.screenWidth;
+        this.MeansY = (this.screenHeight/2 - this.MeansButtonInfo.top - this.MeansButtonInfo.height/2) * this.ipx;
     },
 
     AddGunsList(data)
