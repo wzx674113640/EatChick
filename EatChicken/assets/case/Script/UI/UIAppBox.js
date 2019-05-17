@@ -39,12 +39,25 @@ cc.Class({
        GameGlobal.SeverManager.C2G_fdcount();
        GameGlobal.AdsManager.AdervertActive(false);
        GameGlobal.SeverManager.ShowHideButton(false);
+       GameGlobal.SeverManager.UserInfo.isMoreGame = true;
     },
 
     onDisable()
     {
-        GameGlobal.AdsManager.AdervertActive(true);
-        GameGlobal.SeverManager.ShowHideButton(true);
+        GameGlobal.SeverManager.UserInfo.isMoreGame = false;
+        //GameGlobal.AdsManager.AdervertActive(true);
+        /*
+        if(GameGlobal.SeverManager.UserInfo.isHomePage)
+        {
+            GameGlobal.AdsManager.AdervertActive(false);
+            GameGlobal.SeverManager.ShowHideButton(true);
+        }
+        else
+        {
+            GameGlobal.AdsManager.AdervertActive(true);
+            GameGlobal.SeverManager.ShowHideButton(false);
+        }
+        */
     },
 
     //展示盒子内容
@@ -79,9 +92,9 @@ cc.Class({
 
     BtnHome()
     {  
-        this.node.active = false;
         GameGlobal.MsgCenter.emit(Constant.Msg.ReturnHomePage);
         GameGlobal.MsgCenter.emit(Constant.Msg.AginGame,false);
         GameGlobal.MsgCenter.emit(Constant.Msg.CloseGameOverPanel);
+        this.node.active = false;
     }
 });

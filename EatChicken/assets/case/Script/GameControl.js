@@ -52,7 +52,7 @@ cc.Class({
         this.levelEnemyCount = 5;
         this.HurtLabelList = [];
         this.HurtLabelList.push(this.HurtLabel);
-
+        
         this.PlaySkins = this.Config.PlaySkins;
         this.EnemySkins = this.Config.EnemySkins;
         this.EnemyNames = this.Config.EnemyNames;
@@ -62,10 +62,14 @@ cc.Class({
 
     playBoom(pos)
     {
+        this.BoomDragon.parent.active = true;
         this.BoomDragon.parent.setPosition(pos);
         this._armatureDisPlay = this.BoomDragon.getComponent(dragonBones.ArmatureDisplay);
-
         this._armature = this._armatureDisPlay.playAnimation("Sprite",1);
+        this.scheduleOnce(()=>
+        {
+            this.BoomDragon.parent.active = false;
+        },0.7);
     },
 
     randomSkin(IsBoss)

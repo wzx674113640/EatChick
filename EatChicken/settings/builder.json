@@ -32,7 +32,7 @@
   "title": "EatChicken",
   "webOrientation": "auto",
   "wechatgame": {
-    "REMOTE_SERVER_ROOT": "https://img.qkxz.com/cj/cj15",
+    "REMOTE_SERVER_ROOT": "",
     "appid": "wx72b3922b76cf8ae2",
     "orientation": "portrait",
     "subContext": "Sub"

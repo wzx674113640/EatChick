@@ -15,14 +15,14 @@ cc.Class({
     {
         GameGlobal.MsgCenter.on(Constant.Msg.SkinHint,this.ShowHint.bind(this));
     },
+    
     onDisable()
     {
-        GameGlobal.AdsManager.AdervertActive(false);
+        
     },
 
     onEnable()
     {
-        GameGlobal.AdsManager.AdervertActive(false);
         GameGlobal.SeverManager.C2G_skinlist((data)=>
         {
             var SkinItemList = this.Layout.children;

@@ -10,7 +10,6 @@
     "WebGL Renderer",
     "Renderer Texture",
     "Dynamic Atlas",
-    "LabelOutline",
     "ParticleSystem",
     "TiledMap",
     "Spine Skeleton",
@@ -50,7 +49,7 @@
   "group-list": [
     "default"
   ],
-  "last-module-event-record-time": 1554687576826,
+  "last-module-event-record-time": 1557833973594,
   "simulator-orientation": false,
   "simulator-resolution": {
     "height": 640,

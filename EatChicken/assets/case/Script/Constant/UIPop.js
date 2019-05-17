@@ -11,7 +11,7 @@ var UIPop =  cc.Class({
         UIGameOver:"UIGameOver",
         UIAppBox:"UIAppBox",
         UISkin:"UISkin",
-        UIDownApp:"UIDownApp"
+        UIDownApp:"Banner"
     },
 
 });

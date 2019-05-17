@@ -18,6 +18,7 @@ cc.Class({
         if(!CC_WECHATGAME)
             return;
         var obj = wx.getLaunchOptionsSync();
+        this.OtherUID = obj.query.UID == undefined? null:obj.query.UID;
         var Sence = obj.query.scene == undefined ? null : obj.query.scene;
         this._Sence = decodeURIComponent(Sence); //渠道过来的场景值
         this._AppID = obj.referrerInfo&&obj.referrerInfo.appId?obj.referrerInfo:"";
@@ -50,13 +51,14 @@ cc.Class({
                             gender:"",
                             scene:self._Sence,
                             version: self.version,
-                            uid:0,
+                            uid:self.OtherUID,
                             appid:self._AppID
                         },
                         success (res) {
                             var Data =  res.data.data;
                             self.GetUser(Data);
                             self.C2G_AppID();
+                            self.C2G_Banner();
                         },
                         fail()
                         {
@@ -138,7 +140,27 @@ cc.Class({
             }
         })
     },
+    
+    C2G_Banner()
+    {
+        var self =this; 
+        wx.request({ 
+            url:  self.Domain + "act=banner",
+            data:
+            {
+                openid:self.Data.openid,
+                version:self.version,
+            },
+            success (res) 
+            {
+                var data = res.data.data;
+                self.bannerlist = data;
+            }
+        })
+    },
 
+
+    
     //加载子包
     LoadChildPack()
     {
@@ -203,15 +225,22 @@ cc.Class({
     _progressCallback(completeCount, totalCount, res)
     {
         var value = completeCount / totalCount ;
-        this.ProgressBar.progress = completeCount / totalCount;
-        var BulletUIValue = value * this.ProgressBar.node.width;
-        if(BulletUIValue <= 454)
+        if(value<0.1)
+        {
+            this.ProgressBar.progress = 0.1;
+        }
+        else
+        {
+            this.ProgressBar.progress = completeCount / totalCount;
+        }
+        var BulletUIValue = this.ProgressBar.progress * this.ProgressBar.node.width;
+        if(BulletUIValue <= 480)
         {
             this.BulletUI.x = BulletUIValue;
         }
         else
         {
-            this.BulletUI.x = 454;
+            this.BulletUI.x = 480;
         }
         this.NumBar.string = Math.ceil(value*100)+"%";
     },

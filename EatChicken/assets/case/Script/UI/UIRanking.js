@@ -49,7 +49,6 @@ cc.Class({
         this.isLoadJson = false;
         this.currentPage = 0;
         GameGlobal.SeverManager.ShowHideButton(true);
-        GameGlobal.AdsManager.AdervertActive(true);
     },
     
     ShowFrienRank()

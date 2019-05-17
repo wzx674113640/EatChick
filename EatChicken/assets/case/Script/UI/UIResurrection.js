@@ -7,27 +7,23 @@ cc.Class({
 
         ResurrectionNode:cc.Node,
         GetGunNode: cc.Node,
-        HitEggNode:cc.Node,
-        CoinPanel:cc.Node
     },
 
-    onLoad()
-    {
-       
-    },  
 
     onEnable()
     {
        this.ResurrectionNode.active = true;
        this.GetGunNode.active = false;
-       this.HitEggNode.active = false;
-       this.CoinPanel.active = false;
     
        if(GameGlobal.SeverManager.UserInfo.is_status == 0)
        {
            this.AppLayout.parent.active = false;
            return;
        }
+       GameGlobal.AdsManager.AdervertActive(false);
+       GameGlobal.AdsManager.ShowOrHideAdervert(false);
+       GameGlobal.AdsManager.ShowOrHideAdervert(true);
+       GameGlobal.UIManager.Close(Constant.UIPop.UIDownApp);
        /*
        this.UserInfo = GameGlobal.SeverManager.UserInfo;
        var AppInfoList = this.UserInfo.AppIDInfoList;
@@ -40,6 +36,12 @@ cc.Class({
            this.AppLayout.children[i].getComponent("AppItem").setItem(AppInfoList[i]);
        }
        */
+    },
+    
+    onDisable()
+    {
+        GameGlobal.UIManager.ShowPop(Constant.UIPop.UIDownApp);
+        GameGlobal.AdsManager.AdervertActive(false);
     },
 
     BtnSeeResurrection()

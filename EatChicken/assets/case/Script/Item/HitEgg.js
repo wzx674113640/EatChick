@@ -21,14 +21,14 @@ cc.Class({
 
     onEnable()
     {
-        GameGlobal.AdsManager.AdervertActive(false);
+        //GameGlobal.AdsManager.AdervertActive(false);
         this.Egg.getComponent(cc.Sprite).spriteFrame = this.EggSprites[0];
         this.ClickCount = 12;
     },
 
     onDisable()
     {
-        GameGlobal.AdsManager.AdervertActive(true);s
+        //GameGlobal.AdsManager.AdervertActive(true);
     },
 
     BtnHit()

@@ -147,10 +147,12 @@ cc.Class({
         if(this.GunID != 1 && this.Bullet <= 0)
         {
             this.BtnGetBullet.active = true;
+            this.LabelPower.node.active = false;
         }
         else
         {
             this.BtnGetBullet.active = false;
+            this.LabelPower.node.active = true;
         }
     },
     

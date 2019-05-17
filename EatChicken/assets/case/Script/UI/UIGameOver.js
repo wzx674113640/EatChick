@@ -17,25 +17,26 @@ cc.Class({
         this.AppList.sort(function() {
             return (0.5-Math.random());
        })
-        for(var i = 0; i< this.AppList.length;i++)
+        for(var i = 0; i< this.BtnList.length;i++)
         {
-            if(this.BtnList.length >i)
-            {
-                this.BtnList[i].getComponent("AppItem").setItem(this.AppList[i]);
-            }
-            else
-            {
-                break;
-            }
+            this.BtnList[i].getComponent("AppItem").setItem(this.AppList[i]);
         }
         GameGlobal.MsgCenter.on(Constant.Msg.CloseGameOverPanel,this.CloseGameOverPanel.bind(this));
+        GameGlobal.UIManager.Close(Constant.UIPop.UIDownApp);
+        GameGlobal.AdsManager.AdervertActive(true);
     },
     
+    onDisable()
+    {
+        GameGlobal.UIManager.ShowPop(Constant.UIPop.UIDownApp);
+        GameGlobal.AdsManager.AdervertActive(false);
+    },
+
     CloseGameOverPanel()
     {
         this.node.active = false;
     },
-
+    
     BtnOnePage()
     {
         if(GameGlobal.SeverManager.UserInfo.is_status == 1)

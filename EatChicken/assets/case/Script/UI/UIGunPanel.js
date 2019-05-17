@@ -25,9 +25,9 @@ cc.Class({
         this.key1 = indexlist[this.key];
         this.GunValue = GameControl.Config.GunItems[this.key1].getComponent("BaseGun");
         var SpriteValue = GameControl.Config.Guns[this.key1];
-        this.Title.string = "恭喜获得"+this.GunValue.Name+",子弹8发";
+        this.Title.string = "恭喜获得"+this.GunValue.Name;
         this.GunSprite.spriteFrame = SpriteValue;
-        GameGlobal.SeverManager.C2G_fdcount(1);
+        //GameGlobal.SeverManager.C2G_fdcount(1);
         
         /*
         this.UserInfo = GameGlobal.SeverManager.UserInfo;
@@ -57,7 +57,7 @@ cc.Class({
         {
             var ID = this.key1;
             GameControl.player.ChangeGun(ID);
-            GameControl.player.GunCom.setBulletCount(8);
+            GameControl.player.GunCom.setBulletCount(25);
             GameControl.player.isSelfGun = false; //临时枪
             this.node.active = false;
             GameGlobal.MsgCenter.emit(Constant.Msg.NextLevel);
@@ -80,6 +80,16 @@ cc.Class({
         }
     },
 
+    BtnGetMateGun()
+    {
+        GameGlobal.AdsManager.SeeVideoEvent(()=>
+        {
+            GameControl.player.ChangeGun(18);
+            GameControl.player.GunCom.setBulletCount(1);
+            GameControl.player.isSelfGun = false; //临时枪
+        })
+    },
+
     //永久枪支
     BtnGetGun()
     {
@@ -98,12 +108,39 @@ cc.Class({
         })
     },
 
+    BtnDayGetGun()
+    {
+        GameGlobal.AdsManager.SeeVideoEvent(()=>
+        {
+            GameGlobal.SeverManager.C2G_BuyGun(this.key1,(res)=>
+            {
+                GameGlobal.SeverManager.C2G_UserGun(this.key1+1);
+
+                GameControl.player.ChangeGun1({
+                    "gunID":this.key1+1,
+                    "bullet":GameControl.Config.GunItems[this.key1].getComponent("BaseGun").TotalCount,
+                    "PaseAimed":true
+                });
+                    
+                GameGlobal.SeverManager.UserInfo.ChangeGun(this.key1 + 1);
+               
+                GameGlobal.HintManager.ShowToast("领取成功");
+                this.BtnClose2();
+            });
+        })
+    },
+
     BtnColse()
     {
         this.node.active = false;
         GameGlobal.MsgCenter.emit(Constant.Msg.NextLevel);
     },
     
+    BtnClose2()
+    {
+        this.node.active = false;
+    },
+
     BtnClose1()
     {
         this.node.parent.parent.active = false;

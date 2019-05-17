@@ -134,8 +134,13 @@ var PlayInfo =  cc.Class({
         this.LevelProgress = 0;
         if(this.Level % 2 == 0)
         {
-            GameGlobal.AdsManager.ShowOrHideAdervert(false);
-            GameGlobal.AdsManager.ShowOrHideAdervert(true);
+            /*
+            if(!GameGlobal.SeverManager.UserInfo.isMoreGame)
+            {
+                GameGlobal.AdsManager.ShowOrHideAdervert(false);
+                GameGlobal.AdsManager.ShowOrHideAdervert(true);
+            }
+            */
         }
     },
 

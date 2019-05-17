@@ -13,7 +13,7 @@ var HelperManager =  cc.Class({
         this.sFlist = [];
         this.VideoCount = 7;
         this.DimondCount = 5;
-        this.IsPassDay();
+        //this.IsPassDay();
     },
     
     createImage(avatarUrl,ImgHead) {
@@ -86,7 +86,7 @@ var HelperManager =  cc.Class({
             this.ReSetCount();
             cc.sys.localStorage.setItem("Day",day);
             cc.sys.localStorage.setItem("Month",month);
-            return false ;//不需要重置道具
+            return true ;//不需要重置道具
         }
         else
         {

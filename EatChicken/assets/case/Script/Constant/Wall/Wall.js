@@ -61,12 +61,12 @@ cc.Class({
         if(dir==1)
         {
             this.node.setPosition(-375,y);
-            this.PersonPos = cc.v2(-375 + this.node.width - 50,y);
+            this.PersonPos = cc.v2(-375 + this.node.width - 70,y+8);
         }
         else
         {
             this.node.setPosition(375,y);
-            this.PersonPos =cc.v2(375 - this.node.width + 50,y);
+            this.PersonPos =cc.v2(375 - this.node.width + 70,y+8);
         }
     },
 

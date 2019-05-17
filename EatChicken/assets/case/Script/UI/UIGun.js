@@ -69,7 +69,6 @@ cc.Class({
         this.Gun250 = [];
         this.Gun500 = [];
         GameGlobal.SeverManager.ShowHideButton(true);
-        GameGlobal.AdsManager.AdervertActive(true);
     },
 
     BtnClose()

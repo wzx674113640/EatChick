@@ -19,7 +19,7 @@ cc.Class({
         var CoinList = [10,20,30];
         var index = Math.floor(Math.random()*CoinList.length);
         this.Coin =  CoinList[index];
-        this.CoinLabel.string = "金币+" + this.Coin;
+        this.CoinLabel.string = "金币x" + this.Coin;
         
         if(GameGlobal.SeverManager.UserInfo.is_status == 0)
         {

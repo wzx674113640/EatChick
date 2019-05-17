@@ -28,7 +28,10 @@ var userInfo =  cc.Class({
 
         views:null,// 进入游戏后跳转其他游戏的页面 数据
         AppIDInfoList:null,// 导出游戏的图标数据
-        hzlist: null
+        hzlist: null,
+
+        isHomePage : true,//是否在首页
+        isMoreGame : false
     },
 
     ctor()
@@ -42,12 +45,14 @@ var userInfo =  cc.Class({
             return;
         var sysInfo = window.wx.getSystemInfoSync();
         this.MeansButtonInfo = wx.getMenuButtonBoundingClientRect();
-       
+        
         this.sysInfo = sysInfo;
         this.screenWidth = sysInfo.screenWidth;
         this.screenHeight = sysInfo.screenHeight;
         this.ipx = 750/this.screenWidth;
         this.MeansY = (this.screenHeight/2 - this.MeansButtonInfo.top - this.MeansButtonInfo.height/2) * this.ipx;
+        this.StartPos  = -(this.screenHeight *　this.ipx /2 - 30); //套路UI初始位置
+        this.EndPos = -362; 
     },
 
     AddGunsList(data)
@@ -57,12 +62,14 @@ var userInfo =  cc.Class({
             if(this.GunsList[i].id == data.id)
                 return;
         }
-        var alist = {};
-        alist.id = data.id; 
-        alist.bullet = data.bullet;
-        alist.title = data.title;
-
-        this.GunsList.push(alist);
+        if(data.title != null)
+        {
+            var alist = {};
+            alist.id = data.id; 
+            alist.bullet = data.bullet;
+            alist.title = data.title;
+            this.GunsList.push(alist);
+        }
     },
 
     GunListToJson()
@@ -110,4 +117,6 @@ var userInfo =  cc.Class({
             }
         }
     }
+
+    
 });

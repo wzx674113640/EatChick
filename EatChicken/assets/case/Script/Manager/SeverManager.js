@@ -28,7 +28,7 @@ var SeverManager =  cc.Class({
             this.UserInfo.nickName = Data.nick_name;
             this.UserInfo.avatar_url = Data.avatar_url;
             this.UserInfo.BestScore = Data.score;
-            
+
             if(Data.nick_name == null||Data.nick_name == "null")
             {
                 //授权
@@ -41,7 +41,7 @@ var SeverManager =  cc.Class({
             self.UserInfo.CurrentBullet = infodata.bullet;
             self.UserInfo.Score = infodata.score;
             self.UserInfo.AppIDInfoList = Init.gamelist;
-            
+            self.UserInfo.BannerList = Init.bannerlist;
             //this.C2G_AppID(true);
             this.C2G_hzlist();
         }
@@ -123,12 +123,12 @@ var SeverManager =  cc.Class({
         let height = this.UserInfo.screenHeight;
         var ipx = this.UserInfo.ipx;
 
-        var RankLogo_Y =  200; //y坐标
-        var RankLogo_X =  -292; //x坐标
-        var RankLogo_Width = 106; //宽
-        var RankLogo_Height = 135; //高 
+        var RankLogo_Y =  -112.6; //y坐标
+        var RankLogo_X =  289; //x坐标
+        var RankLogo_Width = 112; //宽
+        var RankLogo_Height = 117; //高 
 
-        var _top = (height * ipx/2 + RankLogo_Y - RankLogo_Width/2)/ipx; //553 y，48 宽除以2
+        var _top = (height * ipx/2 + (-RankLogo_Y) - RankLogo_Width/2)/ipx; //553 y，48 宽除以2
         var _left = (width * ipx/2 + RankLogo_X - RankLogo_Width/2)/ipx; //216.2 x
 
         let button = wx.createUserInfoButton({
@@ -139,7 +139,7 @@ var SeverManager =  cc.Class({
                 top: _top,
                 width: RankLogo_Width/ipx,
                 height: RankLogo_Height/ipx,
-                textAlign: 'center'
+                textAlign: 'center',
             }
         });
 
@@ -306,6 +306,7 @@ var SeverManager =  cc.Class({
         });
     },
     
+
     //跳转其他游戏
     AssociatedProgramEvent(AppID,url,ID)
     {
@@ -513,4 +514,77 @@ var SeverManager =  cc.Class({
         });
     },
 
+    //签到列表
+    C2G_SignList(action)
+    {
+        if(!CC_WECHATGAME)
+            return;
+        var self = this;
+        wx.request({
+            url: this.Domain + 'act=signlist',
+            data:
+            {
+                openid:this.UserInfo.openid,
+                version:this.UserInfo.version,
+            },
+            success (res) {
+                action(res.data.data);
+            }
+        });
+    },
+
+     //签到接口
+     C2G_Sign(action)
+     {
+         if(!CC_WECHATGAME)
+             return;
+         var self = this;
+         wx.request({
+             url: this.Domain + 'act=sign',
+             data:
+             {
+                 openid:this.UserInfo.openid,
+                 version:this.UserInfo.version,
+             },
+             success (res) {
+                 action(res.data.data);
+             }
+         });
+     },
+
+     C2G_FriendList(action)
+     {
+         if(!CC_WECHATGAME)
+             return;
+         var self = this;
+         wx.request({
+             url: this.Domain + 'act=friendlist',
+             data:
+             {
+                 openid:this.UserInfo.openid,
+                 version:this.UserInfo.version,
+             },
+             success (res) {
+                 action(res.data.data);
+             }
+         });
+     },
+
+     C2G_Friendbut(action)
+     {
+         if(!CC_WECHATGAME)
+             return;
+         var self = this;
+         wx.request({
+             url: this.Domain + 'act=friendbut',
+             data:
+             {
+                 openid:this.UserInfo.openid,
+                 version:this.UserInfo.version,
+             },
+             success (res) {
+                 action(res.data.data);
+             }
+         });
+     },
 });

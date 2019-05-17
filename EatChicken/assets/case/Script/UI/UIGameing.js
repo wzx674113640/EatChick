@@ -1,4 +1,4 @@
-var SceneList = [0,1,2,3];
+var SceneList = [0,1,2,3,4];
 
 cc.Class({
     extends: cc.Component,
@@ -19,8 +19,10 @@ cc.Class({
         LabelHeadCount:cc.Label,
 
         UI:cc.Node,
+        Black_BG:cc.Node,
+        Black_BG1:cc.Node,
         StartUI: cc.Node,
-
+        
         HomeCoin:cc.Label,
         HomeScore:cc.Label,
         HomeSoundSprite:
@@ -48,7 +50,9 @@ cc.Class({
         startBang:cc.Sprite,
 
         CH_coinPos:cc.Node,
-        HealthVideoAni:cc.Animation
+        HealthVideoAni:cc.Animation,
+
+        GetDayGunPanel:cc.Node
     },
 
     PlayHealthAni(active)
@@ -201,17 +205,45 @@ cc.Class({
         this.HeadPos = this.HeadCountUI.getPosition();
         this.SoundUI();
         //适配UI
-        this.HomeCoin.node.parent.y = GameGlobal.SeverManager.UserInfo.MeansY;
-        this.CH_coinPos.y = GameGlobal.SeverManager.UserInfo.MeansY;
+        var UserInfo = GameGlobal.SeverManager.UserInfo;
+        this.HomeCoin.node.parent.y =UserInfo.MeansY;
+        this.CH_coinPos.y = UserInfo.MeansY;
+        this.Black_BG.width = UserInfo.screenWidth * UserInfo.ipx;
+        this.Black_BG.height = UserInfo.screenHeight * UserInfo.ipx  + 20;
+        this.Black_BG1.width = UserInfo.screenWidth * UserInfo.ipx;
+        this.Black_BG1.height = UserInfo.screenHeight * UserInfo.ipx + 20;
+
 
         GameGlobal.MsgCenter.on(Constant.Msg.HomePage,this.HomePageUI.bind(this)); //数据更新改变UI
         GameGlobal.MsgCenter.on(Constant.Msg.ReturnHomePage,this.returnHomePage.bind(this)); //返回首页
         GameGlobal.MsgCenter.on(Constant.Msg.ChangCoin,this.ChangCoin.bind(this));
         GameGlobal.MsgCenter.on(Constant.Msg.PlayHealthAni,this.PlayHealthAni.bind(this));
         this.HomePageUI();
-        GameGlobal.AdsManager.ShowOrHideAdervert(true);
+        //GameGlobal.AdsManager.ShowOrHideAdervert(true);
+        GameGlobal.UIManager.ShowPop(Constant.UIPop.UIDownApp);
+        //GameGlobal.UIManager.ShowPop("Banner");
+
+        if(GameGlobal.HelperManager.IsPassDay())
+        {
+            
+            this.GetDayGunPanel.active = true;
+        }
+        else
+        {
+            this.GetDayGunPanel.active = false;
+        }
     },
     
+    CustomerServicesBtn()
+    {
+        if(!CC_WECHATGAME)
+            return;
+        window.wx.openCustomerServiceConversation({
+            success: (res) => {
+            }
+        });
+    },
+
     SoundUI()
     {
         var active = cc.sys.localStorage.getItem("Sound");
@@ -344,7 +376,9 @@ cc.Class({
         GameControl.player.GunCom.AgainAimed();
         GameGlobal.SeverManager.ShowHideButton(false);
         GameGlobal.SeverManager.C2G_GameStart();
-       
+        //GameGlobal.UIManager.Close(Constant.UIPop.UIDownApp);
+        //GameGlobal.AdsManager.ShowOrHideAdervert(true);
+        GameGlobal.SeverManager.UserInfo.isHomePage = false;
    },
 
    ShowMoreGame()
@@ -360,8 +394,11 @@ cc.Class({
         this.StartUI.active  = true;
         this.UI.active = false;
         this.BtnHealthNode.active = true;
-        //GameGlobal.AdsManager.ShowOrHideAdervert(false);
+        GameGlobal.AdsManager.AdervertActive(false);
+        //GameGlobal.UIManager.ShowPop(Constant.UIPop.UIDownApp);
+        //GameGlobal.UIManager.ShowPop("Banner");
         GameGlobal.SeverManager.ShowHideButton(true);
+        GameGlobal.SeverManager.UserInfo.isHomePage = true;
    },
 
    BtnUIRanking()
@@ -378,5 +415,15 @@ cc.Class({
    BtnGun()
    {
         GameGlobal.UIManager.ShowPop(Constant.UIPop.UIGun);
-   }
+   },
+
+    BtnSign()
+    {
+        GameGlobal.UIManager.ShowPop("UISign");
+    },
+
+    BtnShare()
+    {
+        GameGlobal.UIManager.ShowPop("UIShare");
+    }
 });

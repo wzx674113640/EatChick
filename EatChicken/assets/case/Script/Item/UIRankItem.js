@@ -19,7 +19,7 @@ cc.Class({
     setInfo(data)
     {
         this.LabelRank.string = data.num;
-        if(data.avatar_url == "")
+        if(data.avatar_url == "" || data.avatar_url == null ||data.avatar_url == "null")
         {
             this.ImgHead.spriteFrame = this.HeadSpri;
         }
@@ -28,7 +28,14 @@ cc.Class({
             GameGlobal.HelperManager.createImage(data.avatar_url,this.ImgHead);
         }
         let nick = data.nick_name.length <= 8 ? data.nick_name : data.nick_name.substr(0, 8) + "...";
-        this.LabelNickName.string = nick == "null"? "游客" : nick;
+        if(nick == "null"||nick == null||nick == "")
+        {
+            this.LabelNickName.string = "游客";
+        }
+        else
+        {
+            this.LabelNickName.string = nick;
+        }
         this.LabelScore.string = data.score;
         if(data.num<=3)
         {

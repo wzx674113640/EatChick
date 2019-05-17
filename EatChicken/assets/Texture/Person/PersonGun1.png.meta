@@ -1,0 +1,31 @@
+{
+  "ver": "2.2.0",
+  "uuid": "a0651e18-5bd7-428e-86fb-96569de201b8",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "subMetas": {
+    "PersonGun1": {
+      "ver": "1.0.3",
+      "uuid": "602b2d7c-5ef4-4712-94de-9b980358e606",
+      "rawTextureUuid": "a0651e18-5bd7-428e-86fb-96569de201b8",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 26.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 845,
+      "height": 506,
+      "rawWidth": 845,
+      "rawHeight": 559,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

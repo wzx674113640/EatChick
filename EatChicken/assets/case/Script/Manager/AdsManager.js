@@ -1,14 +1,23 @@
 
 var SharePIC = [
-    "https://img.qkxz.com/cj/share/6.jpg",
-    "https://img.qkxz.com/cj/share/7.jpg",
-    "https://img.qkxz.com/cj/share/8.jpg"
+    "https://img.qkxz.com/cj/share/11.jpg",
+    "https://img.qkxz.com/cj/share/22.jpg",
+    "https://img.qkxz.com/cj/share/33.jpg",
+    "https://img.qkxz.com/cj/share/44.jpg",
+    "https://img.qkxz.com/cj/share/55.jpg",
 ]
 
 var ShareStr = [
-    "吃鸡游戏全新登场，不一样的开局，不一样的吃鸡",
-    "吉利服摸到了给你，八倍镜也给你，98K和AWM都给你",
-    "大吉大利，今晚吃鸡",
+
+    "吃鸡战队集合！集合！集合！",
+
+    "哒哒哒哒~作为一名合格的LYB，捡漏才是正道",
+    
+    "吃鸡战场：偷听路人语音，竟无意间揭开主播开挂秘密",
+    
+    "开黑吗？吃鸡吗？王者大神带你飞",
+    
+    "左手平底锅，右手98K，头戴三级盔，身穿三级甲，来人就是干！"
 ];
 
 var AdsManager =  cc.Class({
@@ -116,7 +125,7 @@ var AdsManager =  cc.Class({
             {
                 if(this.ShareEvent!= null)
                 {
-                    GameGlobal.HintManager.TitlePop("分享成功");
+                    //GameGlobal.HintManager.TitlePop("分享成功");
                     /*
                     wx.showToast({
                         title: "分享成功",
@@ -134,9 +143,7 @@ var AdsManager =  cc.Class({
                 {
                     this.SharePop();
                 }
-              
                 //GameGlobal.HintManager.TitlePop("分享失败，请分享到不同的群");
-               
             }
         })
     },
@@ -146,7 +153,7 @@ var AdsManager =  cc.Class({
     {
         if(!CC_WECHATGAME)
             return;
-        if(Active)
+        if(Active) 
         {
             var self = this;
             let bannerAd = wx.createBannerAd({
@@ -159,7 +166,7 @@ var AdsManager =  cc.Class({
                 });
             bannerAd.onLoad(() => {
                 
-                GameGlobal.UIManager.Close(Constant.UIPop.UIDownApp);
+                //GameGlobal.UIManager.Close(Constant.UIPop.UIDownApp);
 
                 if(this.IsIPhoneX)
                 {
@@ -179,7 +186,7 @@ var AdsManager =  cc.Class({
             });
             
             bannerAd.onError(err => {
-                GameGlobal.UIManager.ShowPop(Constant.UIPop.UIDownApp);
+                //GameGlobal.UIManager.ShowPop(Constant.UIPop.UIDownApp);
             })
 
             this.bannerAd = bannerAd;
@@ -304,4 +311,32 @@ var AdsManager =  cc.Class({
         });
         this.ShareEvent = action;
     },
+
+    AddShareEventFriend(action)
+    {
+        var query = "UID=" + GameGlobal.SeverManager.UserInfo.id;
+
+        var actionImg= ()=>
+        {
+            var value = Math.floor(Math.random()*SharePIC.length);
+            this.ShareImg = SharePIC[value];
+            return this.ShareImg;
+        }
+
+        var actionTitle = ()=>
+        {
+            var value = Math.floor(Math.random()*SharePIC.length);
+            this.ShareString = ShareStr[value];
+            return this.ShareString;
+        }
+
+        wx.shareAppMessage({
+            title: actionTitle(),
+            imageUrl: actionImg(),
+            query: query,
+        });
+
+        this.ShareEvent = action;
+    },
+
 });
