@@ -158,7 +158,7 @@ var AdsManager =  cc.Class({
             var self = this;
             let bannerAd = wx.createBannerAd({
                 adUnitId: self.bannerAdID,
-                style: {
+                style: { 
                     left: 0,
                     top:0,
                     width:320

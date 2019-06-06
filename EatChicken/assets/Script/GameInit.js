@@ -32,6 +32,8 @@ cc.Class({
         this.isupdate = true;
         this.LoadChildPack(); 
         this.Login();
+        this.cooltime = 8;
+        this.timer = this.cooltime;
     },
 
     
@@ -137,6 +139,7 @@ cc.Class({
             {
                 var data = res.data.data;
                 self.gamelist = data.gamelist;
+                self.LoaderUIstart();
             }
         })
     },
@@ -178,10 +181,16 @@ cc.Class({
     Finish()
     {
         this.BG.active = false;
+        this.isupdate = false;
     },
 
     LoaderUIstart(prefab = null)
     {
+        if(this.bannerlist != undefined && this.gamelist != undefined && this.UIStart != undefined && this.UserData != undefined)
+        {
+            GameGlobal.MsgCenter.emit("InitSeverInfo");
+        }
+        /*
         if(prefab != null)
         {
             this.UIStartPre = prefab;
@@ -193,7 +202,7 @@ cc.Class({
             if(this.UIStartPre == undefined)
                 return;
         }
-        if(this.isSever == true && this.isloder == true)
+        if(this.isSever == true && this.isloder == true && this.bannerlist != undefined && this.gamelist != undefined)
         {   
             cc.find("Canvas").addComponent(require("GameGlobal"))
             var UINode = cc.instantiate(this.UIStartPre);
@@ -201,6 +210,17 @@ cc.Class({
             UINode.parent = this.UIMainNode;
             this.Finish();
         }
+        */
+
+    },
+
+    LoaderUIstart1(prefab)
+    {
+        cc.find("Canvas").addComponent(require("GameGlobal"))
+        var UINode = cc.instantiate(prefab);
+        this.UIStart = UINode;
+        UINode.parent = this.UIMainNode;
+        this.Finish();
     },
 
     LoadFirstPrefabs()
@@ -208,7 +228,8 @@ cc.Class({
         cc.loader.loadRes('Prefabs/UIGameing', cc.Prefab, this._progressCallback.bind(this),(err, prefab) => {
             //this.Finish();
             //GameGlobal.MsgCenter.on("Finish",this.Finish.bind(this));
-            this.LoaderUIstart(prefab);
+            //this.LoaderUIstart(prefab);
+            this.LoaderUIstart1(prefab);
         });
 
         cc.loader.loadResDir("Sound",cc.assets,function(completeCount, totalCount, res)
@@ -244,5 +265,26 @@ cc.Class({
         }
         this.NumBar.string = Math.ceil(value*100)+"%";
     },
- 
+    
+    update(dt)
+    {
+        return;
+        if(!this.isupdate)
+            return
+        this.timer -= dt;
+        if(this.timer <= 0)
+        {
+            var self = this;
+            wx.showModal({
+                title: '提示',
+                content: "网络不稳定，点击确定重连！",
+                success(res) {
+                   self.Login();
+                   self.isupdate = true;
+                } 
+            }),
+            this.timer = this.cooltime;
+            this.isupdate = false;
+        }
+    }
 });

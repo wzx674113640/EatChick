@@ -49,7 +49,7 @@ cc.Class({
             {
                 GameGlobal.MsgCenter.emit(Constant.Msg.ChangCoin,Number(data.gold));
             }
-            this.Sgin(true);
+            this.SginUI(true);
             GameGlobal.HintManager.ShowToast("签到成功");
         });
     },

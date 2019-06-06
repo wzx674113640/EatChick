@@ -15,6 +15,11 @@ cc.Class({
         var ww = this.node.getComponent(cc.Widget);
         ww.target = cc.find("Canvas");
         ww.bottom = 0;
+       
+    },
+
+    start()
+    {
         this.setBanner();
     },
 
@@ -36,6 +41,8 @@ cc.Class({
 
     setBanner()
     {
+        if(this.BannerList.length == 0 )
+           return;
         if(GameGlobal.SeverManager.UserInfo.is_status == 1 || GameGlobal.SeverManager.UserInfo.is_status == undefined)
         {
             this.index++;

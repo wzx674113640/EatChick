@@ -1,0 +1,31 @@
+{
+  "ver": "2.2.0",
+  "uuid": "a91590a8-437c-4a8d-af84-d868814bbe86",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "subMetas": {
+    "幸运转盘-指针@2x": {
+      "ver": "1.0.3",
+      "uuid": "178228cc-cc05-4e2b-a212-9fd5c2eb2ab8",
+      "rawTextureUuid": "a91590a8-437c-4a8d-af84-d868814bbe86",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 92,
+      "height": 138,
+      "rawWidth": 92,
+      "rawHeight": 138,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

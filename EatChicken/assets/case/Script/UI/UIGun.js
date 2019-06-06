@@ -5,14 +5,17 @@ cc.Class({
     properties: {
       OnePageGun:cc.Node,
       TwoPageGun:cc.Node,
+      ThreePageGun:cc.Node,
       pageView:cc.PageView,
-      LabelCoin:cc.Label
+      LabelCoin:cc.Label,
+      Turntable:cc.Node
     },
 
     start()
     {
         this.GunItems1 = this.OnePageGun.children; 
-        this.GunItems2 = this.TwoPageGun.children; 
+        this.GunItems2 = this.TwoPageGun.children;
+        this.GunItems3 = this.ThreePageGun.children;
         this.Gun250 = [];
         this.Gun500 = [];
     },
@@ -23,6 +26,7 @@ cc.Class({
         GameGlobal.SeverManager.C2G_GunList((res)=>
         {
             var data = res.data.data;
+            var threeIndex = 0;
             for(var i = 0;i<data.length;i++)
             {   
                 if(data[i].gold == 250 || data[i].gold == 0)
@@ -58,6 +62,12 @@ cc.Class({
                     }
                     this.GunItems2[index].active = true;
                     this.GunItems2[index].getComponent("GunItem").SetState(data[i].status,data[i].id,data[i].title,data[i].mybullet,data[i].bullet);
+                }
+                else if(data[i].gold == 9999)
+                {
+                    this.GunItems3[threeIndex].active = true;
+                    this.GunItems3[threeIndex].getComponent("GunItem").SetState(data[i].status,data[i].id,data[i].title,data[i].mybullet,data[i].bullet);
+                    threeIndex ++;
                 }
             }
         });
@@ -128,7 +138,7 @@ cc.Class({
                 return;
             }
         }
-       
+        
     },
 
     
@@ -137,12 +147,27 @@ cc.Class({
         var index = this.pageView.getCurrentPageIndex();
         if(index == 0)
         {
+            this.Turntable.active = false;
+            this.LabelCoin.node.parent.active = true;
             this.LabelCoin.string = "-250"; 
         }
         else if(index == 1)
         {
+            this.Turntable.active = false;
+            this.LabelCoin.node.parent.active = true;
             this.LabelCoin.string = "-500"; 
         }
-    }
+        if(index == 2)
+        {
+            this.LabelCoin.node.parent.active = false;
+            this.Turntable.active = true;
+        }
+    },
+
+    BtnTurn()
+    {
+        this.BtnClose();
+        GameGlobal.UIManager.ShowPop("UITurn");
+    }   
     
 });

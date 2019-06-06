@@ -75,6 +75,8 @@ cc.Class({
             GameGlobal.SeverManager.C2G_Rank((res)=>{
                 var obj = res.data.data.list;
                 var view = res.data.data.view;
+                if(obj == undefined)
+                    return;
                 self.data = obj;
                 self.loadOnePageInfo(self.currentPage);
                 self.MyItem.getComponent("UIRankItem").setInfo(view);

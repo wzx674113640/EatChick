@@ -1,0 +1,31 @@
+{
+  "ver": "2.2.0",
+  "uuid": "06be9e1c-2dd9-4244-b7b0-67d3e801e39e",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "subMetas": {
+    "仅转盘获得@2x": {
+      "ver": "1.0.3",
+      "uuid": "87b5565c-7610-453e-b1fc-f88b74a84de5",
+      "rawTextureUuid": "06be9e1c-2dd9-4244-b7b0-67d3e801e39e",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 119,
+      "height": 24,
+      "rawWidth": 119,
+      "rawHeight": 24,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

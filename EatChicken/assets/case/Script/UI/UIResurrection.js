@@ -61,7 +61,11 @@ cc.Class({
         }
         else
         {
-            GameGlobal.AdsManager.AddShareEvent(()=>
+            //GameGlobal.AdsManager.AddShareEvent(()=>
+            //{
+            //    action();
+            //});
+            GameGlobal.AdsManager.SeeVideoEvent(()=>
             {
                 action();
             });

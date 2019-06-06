@@ -21,6 +21,53 @@ var SeverManager =  cc.Class({
         var Init = cc.find("Canvas").getComponent("GameInit")
         var Data = Init.Data;
         var infodata = Init.UserData;
+        
+        if(Data)
+        {
+            console.log("首次data");
+            this.UserInfo.openid = Data.openid,
+            this.UserInfo.id = Data.id;
+            this.UserInfo.nickName = Data.nick_name;
+            this.UserInfo.avatar_url = Data.avatar_url;
+            this.UserInfo.BestScore = Data.score;
+
+            if(Data.nick_name == null||Data.nick_name == "null")
+            {
+                //授权
+                self.Authorization();
+            }
+            self.UserInfo.is_status = infodata.is_status;
+            self.UserInfo.CurrentGun = infodata.aid;
+            self.UserInfo.CurrentSkin = infodata.skin_id;
+            self.UserInfo.Coin = Number(infodata.gold);
+            self.UserInfo.CurrentBullet = infodata.bullet;
+            self.UserInfo.Score = infodata.score;
+            self.UserInfo.AppIDInfoList = Init.gamelist;
+            self.UserInfo.BannerList = Init.bannerlist;
+            //this.C2G_AppID(true);
+            this.C2G_hzlist();
+        }
+        else
+        {
+            console.error("获取不到服务器数据！！！！！！！！！！");
+        }
+        GameGlobal.MsgCenter.on("InitSeverInfo",this.InitSeverInfo.bind(this));
+        var obj = wx.getLaunchOptionsSync();
+        var Sence = obj.query.scene == undefined ? null : obj.query.scene;
+        this._Sence = decodeURIComponent(Sence); //渠道过来的场景值
+        this._AppID = obj.referrerInfo&&obj.referrerInfo.appId?obj.referrerInfo:"";
+        this.gameID = 0;//当局游戏ID
+       
+    },  
+
+    InitSeverInfo()
+    {
+        console.log("再次data");
+        var self = this;
+        var Init = cc.find("Canvas").getComponent("GameInit")
+        var Data = Init.Data;
+        var infodata = Init.UserData;
+        
         if(Data)
         {
             this.UserInfo.openid = Data.openid,
@@ -49,13 +96,7 @@ var SeverManager =  cc.Class({
         {
             console.error("获取不到服务器数据！！！！！！！！！！");
         }
-        var obj = wx.getLaunchOptionsSync();
-        var Sence = obj.query.scene == undefined ? null : obj.query.scene;
-        this._Sence = decodeURIComponent(Sence); //渠道过来的场景值
-        this._AppID = obj.referrerInfo&&obj.referrerInfo.appId?obj.referrerInfo:"";
-        this.gameID = 0;//当局游戏ID
-       
-    },  
+    },
 
     start()
     {
@@ -247,6 +288,10 @@ var SeverManager =  cc.Class({
             success (res) {
                 var data = res.data.data;
                 self.gameID = data.id;
+                if(data.alist == null||data.alist == undefined)
+                {
+                    return;
+                }
                 for(var i = 0;i < data.alist.length;i++)
                 {   
                     self.UserInfo.AddGunsList(data.alist[i]);
@@ -470,6 +515,9 @@ var SeverManager =  cc.Class({
                 version:this.UserInfo.version,
             },
             success (res) {
+               
+                if(res.data.data.length == 0)
+                    return;
                 action(res.data.data);
             }
         });
@@ -528,6 +576,8 @@ var SeverManager =  cc.Class({
                 version:this.UserInfo.version,
             },
             success (res) {
+                if(res.data.data.length == 0)
+                    return;
                 action(res.data.data);
             }
         });
@@ -547,7 +597,9 @@ var SeverManager =  cc.Class({
                  version:this.UserInfo.version,
              },
              success (res) {
-                 action(res.data.data);
+                if(res.data.data.length == 0)
+                    return;
+                action(res.data.data);
              }
          });
      },

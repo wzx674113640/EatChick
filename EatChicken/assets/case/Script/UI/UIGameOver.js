@@ -6,13 +6,18 @@ cc.Class({
        LayoutNode:cc.Node
     },
 
-   
+    onLoad()
+    {
+        GameGlobal.MsgCenter.on(Constant.Msg.CloseGameOverPanel,this.CloseGameOverPanel.bind(this));
+    },
 
     onEnable () 
     {
         if(GameGlobal.SeverManager.UserInfo.is_status == 0)
             return;
         this.AppList = GameGlobal.SeverManager.UserInfo.AppIDInfoList;
+        if(this.AppList.length == 0)
+            return;
         this.BtnList = this.LayoutNode.children;
         this.AppList.sort(function() {
             return (0.5-Math.random());
@@ -21,7 +26,6 @@ cc.Class({
         {
             this.BtnList[i].getComponent("AppItem").setItem(this.AppList[i]);
         }
-        GameGlobal.MsgCenter.on(Constant.Msg.CloseGameOverPanel,this.CloseGameOverPanel.bind(this));
         GameGlobal.UIManager.Close(Constant.UIPop.UIDownApp);
         GameGlobal.AdsManager.AdervertActive(true);
     },

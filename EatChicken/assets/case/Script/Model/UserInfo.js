@@ -27,8 +27,9 @@ var userInfo =  cc.Class({
         is_status:1,//审核状态  默认非审核状态
 
         views:null,// 进入游戏后跳转其他游戏的页面 数据
-        AppIDInfoList:null,// 导出游戏的图标数据
-        hzlist: null,
+        AppIDInfoList:[],// 导出游戏的图标数据
+        hzlist: [],
+        BannerList:[],
 
         isHomePage : true,//是否在首页
         isMoreGame : false
@@ -51,8 +52,8 @@ var userInfo =  cc.Class({
         this.screenHeight = sysInfo.screenHeight;
         this.ipx = 750/this.screenWidth;
         this.MeansY = (this.screenHeight/2 - this.MeansButtonInfo.top - this.MeansButtonInfo.height/2) * this.ipx;
-        this.StartPos  = -(this.screenHeight *　this.ipx /2 - 30); //套路UI初始位置
-        this.EndPos = -362; 
+        this.StartPos  = -(this.screenHeight * this.ipx)/2 + 150; //套路UI初始位置
+        this.EndPos = -362;
     },
 
     AddGunsList(data)

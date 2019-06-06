@@ -52,7 +52,8 @@ cc.Class({
         CH_coinPos:cc.Node,
         HealthVideoAni:cc.Animation,
 
-        GetDayGunPanel:cc.Node
+        GetDayGunPanel:cc.Node,
+        UIOnceSkin:cc.Node
     },
 
     PlayHealthAni(active)
@@ -69,7 +70,7 @@ cc.Class({
 
     BtnClose()
     {
-        if(GameGlobal.SeverManager.UserInfo.is_status == 1)
+        if(GameGlobal.SeverManager.UserInfo.is_status == 1 && GameGlobal.SeverManager.UIAppBox != undefined)
         {
             GameGlobal.SeverManager.UIAppBox.active = true;
         }
@@ -112,6 +113,10 @@ cc.Class({
 
     OpenGameClick()
     {
+        if(GameGlobal.SeverManager.UIAppBox == undefined)
+        {
+            return;
+        }
         GameGlobal.SeverManager.UIAppBox.active = true;
     },
 
@@ -213,7 +218,6 @@ cc.Class({
         this.Black_BG1.width = UserInfo.screenWidth * UserInfo.ipx;
         this.Black_BG1.height = UserInfo.screenHeight * UserInfo.ipx + 20;
 
-
         GameGlobal.MsgCenter.on(Constant.Msg.HomePage,this.HomePageUI.bind(this)); //数据更新改变UI
         GameGlobal.MsgCenter.on(Constant.Msg.ReturnHomePage,this.returnHomePage.bind(this)); //返回首页
         GameGlobal.MsgCenter.on(Constant.Msg.ChangCoin,this.ChangCoin.bind(this));
@@ -223,14 +227,14 @@ cc.Class({
         GameGlobal.UIManager.ShowPop(Constant.UIPop.UIDownApp);
         //GameGlobal.UIManager.ShowPop("Banner");
 
-        if(GameGlobal.HelperManager.IsPassDay())
+        this.PassDay = GameGlobal.HelperManager.IsPassDay();
+        if(this.PassDay == false)
         {
-            
-            this.GetDayGunPanel.active = true;
+            this.GetDayGunPanel.active = false;
         }
         else
         {
-            this.GetDayGunPanel.active = false;
+            this.GetDayGunPanel.active = true;
         }
     },
     
@@ -246,7 +250,7 @@ cc.Class({
 
     SoundUI()
     {
-        var active = cc.sys.localStorage.getItem("Sound");
+        var active = wx.getStorageSync("Sound");
         if(active == 0)
         {
             this.HomeSound.spriteFrame = this.HomeSoundSprite[0]; //关
@@ -256,10 +260,10 @@ cc.Class({
 
     BtnControlSound()
     {
-        var active = cc.sys.localStorage.getItem("Sound");
+        var active = wx.getStorageSync("Sound");
         if(active == undefined)
         {
-            cc.sys.localStorage.setItem("Sound",0);
+            wx.setStorageSync("Sound",0);
             GameGlobal.SoundManager.SoundToggle = false;
             this.HomeSound.spriteFrame= this.HomeSoundSprite[0]; //关
         }
@@ -267,13 +271,13 @@ cc.Class({
         {
             if(active == 1)
             {
-                cc.sys.localStorage.setItem("Sound",0);
+                wx.setStorageSync("Sound",0);
                 GameGlobal.SoundManager.SoundToggle = false;
                 this.HomeSound.spriteFrame= this.HomeSoundSprite[0]; //关
             }
             else if(active == 0)
             {
-                cc.sys.localStorage.setItem("Sound",1);
+                wx.setStorageSync("Sound",1);
                 GameGlobal.SoundManager.SoundToggle = true;
                 this.HomeSound.spriteFrame = this.HomeSoundSprite[1]; //开
             }
@@ -284,7 +288,7 @@ cc.Class({
     HomePageUI()
     {
         this.HomeCoin.string = GameGlobal.SeverManager.UserInfo.Coin;
-        this.HomeScore.string = GameGlobal.SeverManager.UserInfo.Score;
+        this.HomeScore.string = GameGlobal.SeverManager.UserInfo.BestScore;
     },
 
     ChangCoin(Coin)
@@ -379,6 +383,32 @@ cc.Class({
         //GameGlobal.UIManager.Close(Constant.UIPop.UIDownApp);
         //GameGlobal.AdsManager.ShowOrHideAdervert(true);
         GameGlobal.SeverManager.UserInfo.isHomePage = false;
+
+
+        var value = wx.getStorageSync("SkinToggle");
+        if(value)
+        {
+            if(value == "1" || value == 1)
+            {
+                if(this.PassDay == false || this.PassDay == "FirstGame")
+                {
+                    this.UIOnceSkin.active = false;
+                }
+                else 
+                {
+                    this.UIOnceSkin.active = true;
+                    wx.setStorageSync("SkinToggle","0")
+                }
+            }
+            else
+            {
+                this.UIOnceSkin.active = true;
+            }
+        }
+        else
+        {
+            this.UIOnceSkin.active = true;
+        }
    },
 
    ShowMoreGame()
@@ -399,6 +429,8 @@ cc.Class({
         //GameGlobal.UIManager.ShowPop("Banner");
         GameGlobal.SeverManager.ShowHideButton(true);
         GameGlobal.SeverManager.UserInfo.isHomePage = true;
+
+        GameGlobal.MsgCenter.emit(Constant.Msg.UseSkin,GameGlobal.SeverManager.UserInfo.CurrentSkin); 
    },
 
    BtnUIRanking()
@@ -425,5 +457,10 @@ cc.Class({
     BtnShare()
     {
         GameGlobal.UIManager.ShowPop("UIShare");
+    },
+
+    BtnAward()
+    {
+        GameGlobal.UIManager.ShowPop("UITurn");
     }
 });

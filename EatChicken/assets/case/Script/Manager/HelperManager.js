@@ -76,17 +76,22 @@ var HelperManager =  cc.Class({
     //是否过了一天
     IsPassDay()
     {
-        var ItemDay = cc.sys.localStorage.getItem("Day");
-        var ItemMonth = cc.sys.localStorage.getItem("Month");
+        var turnCount = wx.getStorageSync("AwardCount");
+        if(turnCount == "" || turnCount == null)
+        {
+            wx.setStorageSync("AwardCount",5);
+        }
+        var ItemDay = wx.getStorageSync("Day");
+        var ItemMonth = wx.getStorageSync("Month");
         var data = new Date();
         var day = data.getUTCDate();
         var month = data.getUTCMonth();
         if(ItemDay === ""||ItemDay === null)
         {
             this.ReSetCount();
-            cc.sys.localStorage.setItem("Day",day);
-            cc.sys.localStorage.setItem("Month",month);
-            return true ;//不需要重置道具
+            wx.setStorageSync("Day",day);
+            wx.setStorageSync("Month",month);
+            return "FirstGame";
         }
         else
         {
@@ -94,8 +99,8 @@ var HelperManager =  cc.Class({
             if(month-ItemMonth>0)
             {
                 this.ReSetCount();
-                cc.sys.localStorage.setItem("Day",day);
-                cc.sys.localStorage.setItem("Month",month);
+                wx.setStorageSync("Day",day);
+                wx.setStorageSync("Month",month);
                 return true ;//重置道具
             }
             else
@@ -103,8 +108,8 @@ var HelperManager =  cc.Class({
                 if(day - ItemDay>0)
                 {
                     this.ReSetCount();
-                    cc.sys.localStorage.setItem("Day",day);
-                    cc.sys.localStorage.setItem("Month",month);
+                    wx.setStorageSync("Day",day);
+                    wx.setStorageSync("Month",month);
                     return true; 
                 }
                 else
@@ -118,18 +123,19 @@ var HelperManager =  cc.Class({
 //更新每天的次数
     ReSetCount()
     {
-        cc.sys.localStorage.setItem("DimondCount",this.DimondCount);
-        cc.sys.localStorage.setItem("VideoCount",this.VideoCount);
+        wx.setStorageSync("DimondCount",this.DimondCount);
+        wx.setStorageSync("VideoCount",this.VideoCount);
+        wx.setStorageSync("AwardCount",5);
     },
 
 
 //限制看得砖石的次数
     GetDimondVideoCount()
     {
-        var ItemDimondCount = cc.sys.localStorage.getItem("DimondCount");
+        var ItemDimondCount = wx.getStorageSync("DimondCount");
         if(ItemDimondCount === ""||ItemDimondCount === null)
         {
-            cc.sys.localStorage.setItem("DimondCount",this.DimondCount);
+            wx.setStorageSync("DimondCount",this.DimondCount);
             ItemDimondCount = this.DimondCount;
             return ItemDimondCount;
         }
@@ -143,7 +149,7 @@ var HelperManager =  cc.Class({
     {
         //var dimonCount = this.GetDimondVideoCount();
         Count--;
-        cc.sys.localStorage.setItem("DimondCount",Count);
+        wx.setStorageSync("DimondCount",Count);
     },
 
 //限制今天看视频的次数
@@ -151,10 +157,10 @@ var HelperManager =  cc.Class({
     {
         var Vcount = this.VideoCount;
         
-        var ItemVideoCount = cc.sys.localStorage.getItem("VideoCount");
+        var ItemVideoCount = wx.getStorageSync("VideoCount");
         if(ItemVideoCount === ""|| ItemVideoCount === null)
         {
-            cc.sys.localStorage.setItem("VideoCount",Vcount);
+            wx.setStorageSync("VideoCount",Vcount);
             return Vcount;
         }
         else
@@ -167,7 +173,7 @@ var HelperManager =  cc.Class({
     {
         //var videoCount = this.GetAllVideoCount();
         Count--;
-        cc.sys.localStorage.setItem("VideoCount",Count);
+        wx.setStorageSync("VideoCount",Count);
     }
 
 });
